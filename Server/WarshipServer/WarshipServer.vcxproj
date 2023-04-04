@@ -139,7 +139,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Board.cpp" />
+    <ClCompile Include="Footprint.cpp" />
+    <ClCompile Include="MapNode.cpp" />
+    <ClCompile Include="Ship.cpp" />
+    <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="WarshipServer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Board.h" />
+    <ClInclude Include="Footprint.h" />
+    <ClInclude Include="MapNode.h" />
+    <ClInclude Include="Ship.h" />
+    <ClInclude Include="Vector2.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

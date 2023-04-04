@@ -5,10 +5,15 @@
 #include <winsock2.h>
 #pragma comment(lib, "ws2_32.lib")
 
+#include "Board.h"
+
 using namespace std;
 
 int main()
 {
+    Board board(10,10);
+
+    /*
     cout << "Hello Warship Server World!" << endl;
 
     WSADATA WSAData;
@@ -41,6 +46,8 @@ int main()
         {
             cout << "Sending hello to client" << endl;
             send(csock, "HELLO CLIENT\r\n", 14, 0);
+
+            received = true;
         }
         else
         {
@@ -51,8 +58,11 @@ int main()
     closesocket(csock);
     WSACleanup();
 
+    */
     return 0;
 }
+
+//keeping that at hand just in case
 
 // Exécuter le programme : Ctrl+F5 ou menu Déboguer > Exécuter sans débogage
 // Déboguer le programme : F5 ou menu Déboguer > Démarrer le débogage
