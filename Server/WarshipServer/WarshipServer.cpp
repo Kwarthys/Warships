@@ -2,16 +2,34 @@
 //
 
 #include <iostream>
-#include <winsock2.h>
-#pragma comment(lib, "ws2_32.lib")
+//#include <winsock2.h>
+//#pragma comment(lib, "ws2_32.lib")
 
 #include "Board.h"
+#include "Ship.h"
 
 using namespace std;
 
 int main()
 {
     Board board(10,10);
+
+    board.debugDisplayMap();
+
+    Vector2 pos = Vector2(0, 0);
+    Ship s(pos, 4, Ship::UP);
+    board.placeShip(s);
+    board.debugDisplayMap();
+
+    pos = Vector2(2, 2);
+    Ship s2(pos, 3, Ship::RIGHT);
+    board.placeShip(s2);
+    board.debugDisplayMap();
+
+    pos = Vector2(9,9);
+    Ship s3(pos, 4, Ship::DOWN);
+    board.placeShip(s3);
+    board.debugDisplayMap();
 
     /*
     cout << "Hello Warship Server World!" << endl;

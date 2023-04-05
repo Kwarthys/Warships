@@ -14,11 +14,60 @@ Board::Board(int sizeX, int sizeY)
 	}
 }
 
-bool Board::placeShip(Vector2 pos, Ship& ship)
+bool Board::placeShip(Ship& ship)
 {
-	int targetedIndex = fromCoordToIndex(pos);
+	int targetedIndex = fromCoordToIndex(ship.pos);
+
+	if (isSpotFree(ship.footprint))
+	{
+		ship.index = ships.size();
+		ships.push_back(ship);
+		assignShipToMap(ship);
+	}
 
 	return false;
+}
+
+void Board::assignShipToMap(Ship& ship)
+{
+	//spot is already free
+	Footprint f = ship.footprint;
+	for (int j = 0; j < f.h; ++j)
+	{
+		for (int i = 0; i < f.w; ++i)
+		{
+			int x = f.x + i;
+			int y = f.y + j;
+
+			int nodeIndex = fromCoordToIndex(x, y);
+			map.at(nodeIndex).assignShip(ship.index);
+		}
+	}
+}
+
+bool Board::isSpotFree(Footprint& spot)
+{
+	bool available = false;
+	/*** Check map boundaries ***/
+	if (spot.x >= 0 && spot.x + spot.w - 1 < sizeX && spot.y >= 0 && spot.y + spot.h - 1 < sizeY)
+	{
+		available = true;
+
+		for (int j = 0; j < spot.h && available; ++j)
+		{
+			for (int i = 0; i < spot.w; ++i)
+			{
+				//a bit overkill as ships are only one tile wide, but that will allow to test areas later, or add bigger ships ?
+				int x = spot.x + i;
+				int y = spot.y + j;
+
+				int nodeIndex = fromCoordToIndex(x, y);
+				available = available && !map.at(nodeIndex).taken; //if one is false, free will be false and loop terminated
+			}
+		}
+	}
+
+	return available;
 }
 
 Vector2 Board::fromIndexToCoord(int index)
@@ -29,4 +78,35 @@ Vector2 Board::fromIndexToCoord(int index)
 	coords.y = index / sizeX;
 
 	return coords;
+}
+
+void Board::debugDisplayMap()
+{
+	std::ostringstream text;
+
+	for (int j = sizeY - 1; j >= 0; --j)
+	{
+		for (int i = 0; i < sizeX; ++i)
+		{
+			int nodeIndex = fromCoordToIndex(i, j);
+			int id = map.at(nodeIndex).shipID;
+			std::string idString;
+
+			if (id == -1)
+			{
+				idString = "~~~";
+			}
+			else
+			{
+				idString = std::to_string(id);
+				while (idString.size() < 3) { idString = " " + idString; }
+			}
+
+			text << idString << " ";
+		}
+
+		text << std::endl;
+	}
+
+	std::cout << text.str() << std::endl;
 }

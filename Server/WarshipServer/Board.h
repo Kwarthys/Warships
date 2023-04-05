@@ -1,4 +1,7 @@
 #include <vector>
+#include <sstream>
+#include <string>
+#include <iostream>
 
 #include "Ship.h"
 #include "MapNode.h"
@@ -9,16 +12,21 @@ class Board
 	public:
 		Board(int sizeX, int sizeY);
 
-		bool placeShip(Vector2 pos, Ship& ship);
+		bool placeShip(Ship& ship);
+		bool isSpotFree(Footprint& spot);
 
 		int fromCoordToIndex(int x, int y) { return y * sizeX + x; };
 		int fromCoordToIndex(Vector2 coords) { return coords.y * sizeX + coords.x; };
 		Vector2 fromIndexToCoord(int index);
+
+		void debugDisplayMap();
 
 	private:
 		int sizeX;
 		int sizeY;
 		std::vector<MapNode> map;
 		std::vector<Ship> ships;
+
+		void assignShipToMap(Ship& ship);
  };
 

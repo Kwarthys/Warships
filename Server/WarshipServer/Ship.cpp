@@ -1,16 +1,12 @@
 #include "Ship.h"
 
-Ship::Ship()
+Ship::Ship(Vector2 pos, int length, Orientation orientation) : pos(pos), length(length), facing(orientation)
 {
-	facing = (Orientation)(std::rand() % 4);
-	length = std::rand() % 4 + 1;
-
-	pos = Vector2();
-
-
 	/*** Compute Footprint ***/
-	int w = 0;
-	int h = 0;
+	int w = 1;
+	int h = 1;
+	int x = pos.x;
+	int y = pos.y;
 	switch (facing)
 	{
 	case UP:
@@ -18,7 +14,8 @@ Ship::Ship()
 		break;
 
 	case DOWN:
-		h = -length;
+		h = length;
+		y = y - (length - 1);
 		break;
 
 	case RIGHT:
@@ -26,9 +23,10 @@ Ship::Ship()
 		break;
 
 	case LEFT:
-		w = -length;
+		w = length;
+		x = x - (length - 1);
 		break;
 	}
 
-	footprint = Footprint(pos.x, pos.y, w, h); //pos still 0,0 for now but will be moved elsewhere
+	footprint = Footprint(x, y, w, h); //pos still 0,0 for now but will be moved elsewhere
 }
