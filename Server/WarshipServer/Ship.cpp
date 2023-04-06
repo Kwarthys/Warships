@@ -2,6 +2,11 @@
 
 Ship::Ship(Vector2 pos, int length, Orientation orientation) : pos(pos), length(length), facing(orientation)
 {
+	for (int i = 0; i < length; ++i)
+	{
+		hitPoints.push_back(false);
+	}
+
 	/*** Compute Footprint ***/
 	int w = 1;
 	int h = 1;
@@ -29,4 +34,69 @@ Ship::Ship(Vector2 pos, int length, Orientation orientation) : pos(pos), length(
 	}
 
 	footprint = Footprint(x, y, w, h); //pos still 0,0 for now but will be moved elsewhere
+}
+
+bool Ship::takeHit(Vector2 hit)
+{
+	int hitPlace = fromPointToLength(hit);
+
+	if (hitPlace == -1)
+	{
+		std::cerr << "Ship was not hit" << std::endl;
+		return false;
+	}
+
+	if (hitPoints.at(hitPlace))
+	{
+		std::cerr << "Ship was already hit here" << std::endl;
+		return false;
+	}
+
+	hitPoints.at(hitPlace) = true;
+
+	if (isSunk())
+	{
+		std::cout << "SUNK" << std::endl;
+	}
+
+	return true;
+}
+
+int Ship::fromPointToLength(Vector2 hit)
+{
+	int dx = hit.x - pos.x;
+	int dy = hit.y - pos.y;
+	int value = -1;
+	if (facing == UP || facing == DOWN)
+	{
+		if (dx == 0)
+		{
+			if (abs(dy) < length)
+			{
+				value = facing == UP ? dy : -dy;
+			}
+		}		
+	}
+	else if (facing == RIGHT || facing == LEFT)
+	{
+		if (dy == 0)
+		{
+			if (abs(dx) < length)
+			{
+				value = facing == RIGHT ? dx : -dx;
+			}
+		}
+	}
+
+	return value;
+}
+
+bool Ship::isSunk()
+{
+	bool sunk = true;
+	for (size_t i = 0; i < hitPoints.size(); ++i)
+	{
+		sunk = sunk && hitPoints.at(i);//if any section is alive (false), sunk will be false as well
+	}
+	return sunk;
 }

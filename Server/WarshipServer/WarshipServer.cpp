@@ -31,6 +31,12 @@ int main()
     board.placeShip(s3);
     board.debugDisplayMap();
 
+    board.shoot(Vector2(9, 9));
+    board.shoot(Vector2(9, 6));
+    board.shoot(Vector2(9, 7));
+    board.shoot(Vector2(9, 8));
+    board.debugDisplayMap();
+
     /*
     cout << "Hello Warship Server World!" << endl;
 

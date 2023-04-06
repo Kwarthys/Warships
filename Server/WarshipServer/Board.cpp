@@ -14,6 +14,23 @@ Board::Board(int sizeX, int sizeY)
 	}
 }
 
+bool Board::shoot(Vector2 target)
+{
+	int nodeIndex = fromCoordToIndex(target);
+
+	bool shipHit = map.at(nodeIndex).taken && !map.at(nodeIndex).hit;
+
+	map.at(nodeIndex).hit = true;
+
+	if (shipHit)
+	{
+		int shipIndex = map.at(nodeIndex).shipID;
+		ships.at(shipIndex).takeHit(target);
+	}
+
+	return shipHit;
+}
+
 bool Board::placeShip(Ship& ship)
 {
 	int targetedIndex = fromCoordToIndex(ship.pos);
@@ -99,14 +116,15 @@ void Board::debugDisplayMap()
 			else
 			{
 				idString = std::to_string(id);
+				if (map.at(nodeIndex).hit)
+				{
+					idString = "x" + idString;
+				}
 				while (idString.size() < 3) { idString = " " + idString; }
 			}
-
 			text << idString << " ";
 		}
-
 		text << std::endl;
 	}
-
 	std::cout << text.str() << std::endl;
 }

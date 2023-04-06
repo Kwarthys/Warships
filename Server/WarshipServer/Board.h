@@ -15,6 +15,8 @@ class Board
 		bool placeShip(Ship& ship);
 		bool isSpotFree(Footprint& spot);
 
+		bool shoot(Vector2 target);
+
 		int fromCoordToIndex(int x, int y) { return y * sizeX + x; };
 		int fromCoordToIndex(Vector2 coords) { return coords.y * sizeX + coords.x; };
 		Vector2 fromIndexToCoord(int index);
