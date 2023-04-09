@@ -165,6 +165,7 @@ GameObject:
   m_Component:
   - component: {fileID: 87330970}
   - component: {fileID: 87330969}
+  - component: {fileID: 87330971}
   m_Layer: 0
   m_Name: GridManager
   m_TagString: Untagged
@@ -201,6 +202,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &87330971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 87330968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6947ec3432eaa3248b9388649b3fe86c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  theCamera: {fileID: 330585545}
+  seaLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &105203632
 GameObject:
   m_ObjectHideFlags: 0
@@ -257,7 +274,7 @@ GameObject:
   - component: {fileID: 288742366}
   - component: {fileID: 288742365}
   - component: {fileID: 288742364}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SeaLevel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -768,8 +785,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3436e8b01ec8a75499a34bb9da8cf642, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 30
-  height: 30
+  width: 40
+  height: 40
   center: {x: 0, y: 0, z: 0}
   speed: 20
   theCamera: {fileID: 330585545}

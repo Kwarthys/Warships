@@ -4,12 +4,20 @@ using UnityEngine;
 
 public class GridManager : MonoBehaviour
 {
+    public static GridManager instance;
+    private void Awake()
+    {
+        instance = this;
+    }
+
+
     [SerializeField]
     private Vector2Int gridSize = new Vector2Int(10,10);
     [SerializeField]
     private float cellUnitSize = 1;
 
     private Vector3 offset;
+    private Vector3 cellOffset;
 
     private bool initialized = false;
 
@@ -18,10 +26,23 @@ public class GridManager : MonoBehaviour
     void Start()
     {
         map = new GridNode[gridSize.x * gridSize.y];
-        offset = new Vector3(-gridSize.x / 2, 0, -gridSize.y / 2);
+
+        offset = new Vector3(-gridSize.x / 2f, 0, -gridSize.y / 2f);
+        cellOffset = Vector3.zero;
+
+        if (gridSize.x % 2 == 0)
+        {
+            cellOffset.x += 0.5f;
+        }
+
+        if (gridSize.y % 2 == 0)
+        {
+            cellOffset.z += 0.5f;
+        }
+
         for (int i = 0; i < map.Length; i++)
         {
-            map[i] = new GridNode(i, new Vector2Int(i%gridSize.x, i/gridSize.x));
+            map[i] = new GridNode(i, fromIndexToCoords(i));
         }
 
         initialized = true;
@@ -34,8 +55,54 @@ public class GridManager : MonoBehaviour
         for (int i = 0; i < map.Length; i++)
         {
             Vector2Int coords = map[i].coords;
-            Gizmos.color = map[i].shipIndex == GridNode.WATER ? Color.blue : map[i].hit ? Color.red : Color.white;
-            Gizmos.DrawWireCube((new Vector3(coords.x, 0, coords.y) + offset) * cellUnitSize, Vector3.one * cellUnitSize);
+
+            Color color = Color.blue;
+
+            if (map[i].hit) color = Color.red;
+
+            Gizmos.color = color;
+            Gizmos.DrawWireCube((new Vector3(coords.x, 0, coords.y) + offset + cellOffset) * cellUnitSize, Vector3.one * cellUnitSize);
         }
+    }
+
+    public void registerClic(Vector3 worldPos)
+    {
+        int hitCellIndex = fromWorldToNode(worldPos);
+        if(hitCellIndex == -1)
+        {
+            Debug.Log("OutOfMap");
+        }
+        else
+        {
+            Debug.Log("Hit cell " + map[hitCellIndex].coords);
+        }
+    }
+
+    private int fromWorldToNode(Vector3 worldPos)
+    {
+        worldPos /= cellUnitSize;
+        worldPos -= offset;
+
+        int cellIndex = fromCoordsToIndex(new Vector2Int((int)worldPos.x, (int)worldPos.z));
+
+        if(cellIndex >= 0 && cellIndex < map.Length)
+        {
+            map[cellIndex].hit = true;
+            return cellIndex;
+        }
+        else
+        {
+            return -1;
+        }
+    }
+
+    private Vector2Int fromIndexToCoords(int index)
+    {
+        return new Vector2Int(index % gridSize.x, index / gridSize.x);
+    }
+
+    private int fromCoordsToIndex(Vector2Int coords)
+    {
+        return coords.y * gridSize.x + coords.x;
     }
 }
