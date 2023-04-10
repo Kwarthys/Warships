@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Ship
 {
+    public string shipName = "Ship";
+
     public int length { get; private set; }
     public int index { get; private set; }
 
@@ -19,5 +21,13 @@ public class Ship
         {
             hitPool[i] = false;
         }
+    }
+
+    public Ship(ShipScriptableObject shipScriptable, int index)
+    {
+        this.length = shipScriptable.length;
+        this.index = index;
+
+        this.shipName = shipScriptable.shipName;
     }
 }

@@ -78,16 +78,37 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    private int fromWorldToNode(Vector3 worldPos)
+    public Vector3 snapWorldToGrid(Vector3 worldPos)
+    {
+        int cellIndex = fromWorldToNode(worldPos);
+        if (cellIndex == -1)
+        {
+            return worldPos;
+        }
+
+        Vector2Int coords = map[cellIndex].coords;
+        return (new Vector3(coords.x, 0, coords.y) + offset + cellOffset) * cellUnitSize;
+
+    }
+
+    public int fromWorldToNode(Vector3 worldPos)
     {
         worldPos /= cellUnitSize;
         worldPos -= offset;
+
+        Vector2Int tempCoords = new Vector2Int((int)worldPos.x, (int)worldPos.z);
+
+        Debug.Log(tempCoords);
+        
+        if(tempCoords.x < 0 || tempCoords.y < 0 || tempCoords.x >= gridSize.x || tempCoords.y >= gridSize.y)
+        {
+            return -1;
+        }
 
         int cellIndex = fromCoordsToIndex(new Vector2Int((int)worldPos.x, (int)worldPos.z));
 
         if(cellIndex >= 0 && cellIndex < map.Length)
         {
-            map[cellIndex].hit = true;
             return cellIndex;
         }
         else
