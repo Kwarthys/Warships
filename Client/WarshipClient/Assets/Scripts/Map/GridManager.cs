@@ -97,8 +97,6 @@ public class GridManager : MonoBehaviour
         worldPos -= offset;
 
         Vector2Int tempCoords = new Vector2Int((int)worldPos.x, (int)worldPos.z);
-
-        Debug.Log(tempCoords);
         
         if(tempCoords.x < 0 || tempCoords.y < 0 || tempCoords.x >= gridSize.x || tempCoords.y >= gridSize.y)
         {
