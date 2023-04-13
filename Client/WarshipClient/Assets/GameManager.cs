@@ -58,13 +58,11 @@ public class GameManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            Debug.Log("Rotate");
             placingGhost.transform.Rotate(new Vector3(0, 90, 0));
         }
 
         if(Input.GetMouseButtonDown(0))//left clic
         {
-            Debug.Log("Place");
             placingGhost = null;
         }
     }

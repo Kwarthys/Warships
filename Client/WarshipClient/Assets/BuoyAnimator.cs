@@ -21,17 +21,21 @@ public class BuoyAnimator : MonoBehaviour
     private Quaternion origin;
     private float slerpT;
 
+    private float upOffset;
+
     private void Start()
     {
         nextTarget = getRandomQuaternionTarget();
         currentTarget = getRandomQuaternionTarget();
         origin = Quaternion.LookRotation(Vector3.up);
+
+        upOffset = Random.value;
     }
 
     void Update()
     {
         Vector3 pos = transform.position;
-        pos.y = Mathf.Sin(2 * Mathf.PI * upSpeed * Time.realtimeSinceStartup) * upAmp;
+        pos.y = Mathf.Sin(2 * Mathf.PI * upSpeed * (Time.realtimeSinceStartup + upOffset)) * upAmp;
         transform.position = pos;
 
 

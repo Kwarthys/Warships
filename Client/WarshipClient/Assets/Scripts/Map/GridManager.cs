@@ -16,6 +16,9 @@ public class GridManager : MonoBehaviour
     [SerializeField]
     private float cellUnitSize = 1;
 
+    [SerializeField]
+    private GameObject buoyPrefab;
+
     private Vector3 offset;
     private Vector3 cellOffset;
 
@@ -28,6 +31,7 @@ public class GridManager : MonoBehaviour
         map = new GridNode[gridSize.x * gridSize.y];
 
         offset = new Vector3(-gridSize.x / 2f, 0, -gridSize.y / 2f);
+
         cellOffset = Vector3.zero;
 
         if (gridSize.x % 2 == 0)
@@ -46,9 +50,25 @@ public class GridManager : MonoBehaviour
         }
 
         initialized = true;
+
+        spawnGridBuoys();
     }
 
-    private void OnDrawGizmos()
+    private void spawnGridBuoys()
+    {
+        for(int j = 0; j < gridSize.y + 1; ++j)
+        {
+            for(int i = 0; i < gridSize.x + 1; ++i)
+            {
+                //BottomLeftPoint
+                Vector3 point = (new Vector3(i, 0, j) + offset) * cellUnitSize;
+
+                Instantiate(buoyPrefab, point, buoyPrefab.transform.rotation, transform);
+            }
+        }
+    }
+
+    private void OnDrawGizmosSelected()
     {
         if (!initialized) return;
 
@@ -68,14 +88,6 @@ public class GridManager : MonoBehaviour
     public void registerClic(Vector3 worldPos)
     {
         int hitCellIndex = fromWorldToNode(worldPos);
-        if(hitCellIndex == -1)
-        {
-            Debug.Log("OutOfMap");
-        }
-        else
-        {
-            Debug.Log("Hit cell " + map[hitCellIndex].coords);
-        }
     }
 
     public Vector3 snapWorldToGrid(Vector3 worldPos)
