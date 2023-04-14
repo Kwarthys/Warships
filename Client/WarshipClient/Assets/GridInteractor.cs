@@ -11,7 +11,7 @@ public class GridInteractor : MonoBehaviour
         {
             if(GameManager.instance.tryGetMousePosOnBoard(out Vector3 point))
             {
-                GridManager.instance.registerClic(point);
+                //GridManager.instance.registerClic(point);
             }
         }
     }

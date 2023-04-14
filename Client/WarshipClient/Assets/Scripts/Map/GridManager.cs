@@ -4,12 +4,6 @@ using UnityEngine;
 
 public class GridManager : MonoBehaviour
 {
-    public static GridManager instance;
-    private void Awake()
-    {
-        instance = this;
-    }
-
 
     [SerializeField]
     private Vector2Int gridSize = new Vector2Int(10,10);
@@ -68,7 +62,7 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmosSelected()
+    private void OnDrawGizmos()
     {
         if (!initialized) return;
 
@@ -79,6 +73,7 @@ public class GridManager : MonoBehaviour
             Color color = Color.blue;
 
             if (map[i].hit) color = Color.red;
+            else if (map[i].shipIndex != GridNode.WATER) color = Color.white;
 
             Gizmos.color = color;
             Gizmos.DrawWireCube((new Vector3(coords.x, 0, coords.y) + offset + cellOffset) * cellUnitSize, Vector3.one * cellUnitSize);
@@ -88,6 +83,85 @@ public class GridManager : MonoBehaviour
     public void registerClic(Vector3 worldPos)
     {
         int hitCellIndex = fromWorldToNode(worldPos);
+    }
+
+    public bool snapShipToGrid(Vector3 worldPos, out Vector3 point, int shipLength = 1, Ship.Orientation orientation = Ship.Orientation.NORTH)
+    {
+        int cellIndex = fromWorldToNode(worldPos);
+        if (cellIndex == -1) //out of grid
+        {
+            point = worldPos;
+            return false;
+        }
+
+        Vector2Int coords = map[cellIndex].coords;
+
+        Vector3 evenOffset = Vector3.zero;
+        if (shipLength % 2 == 0)
+        {
+            if(orientation == Ship.Orientation.NORTH || orientation == Ship.Orientation.SOUTH)
+            {
+                evenOffset += Vector3.forward * 0.5f;
+            }
+            else
+            {
+                evenOffset += Vector3.right * 0.5f;
+            }
+        }
+
+        point =  (new Vector3(coords.x, 0, coords.y) + offset + cellOffset + evenOffset) * cellUnitSize;
+        return true;
+    }
+
+    public bool placeShipAt(Vector3 worldPos, Ship ship)
+    {
+        int index = fromWorldToNode(worldPos);
+        if (index == -1) return false;
+
+        return checkSpaceForShip(map[index].coords, ship, true);
+    }
+
+    private bool checkSpaceForShip(Vector2Int shipCenter, Ship ship, bool placeIfEmpty = false)
+    {
+        RectInt shipFootprint = ship.computeShipFootprint(shipCenter);
+
+        bool spaceFree = true;
+
+        /*border checks*/
+        if (shipFootprint.x < 0 || shipFootprint.y < 0 || shipFootprint.x + shipFootprint.width > gridSize.x || shipFootprint.y + shipFootprint.height > gridSize.y)
+        {
+            Debug.Log("Placement out of map : " + shipFootprint);
+            return false;
+        }
+        /***************/
+
+        for(int j = 0; j < shipFootprint.height && spaceFree; ++j)
+        {
+            for (int i = 0; i < shipFootprint.width && spaceFree; i++)
+            {
+                int cellIndex = fromCoordsToIndex(shipFootprint.x + i, shipFootprint.y + j);
+                spaceFree = map[cellIndex].shipIndex == GridNode.WATER;
+
+                if(!spaceFree)
+                {
+                    Debug.Log("A ship is already here");
+                }
+            }
+        }
+
+        if(spaceFree && placeIfEmpty)
+        {
+            for (int j = 0; j < shipFootprint.height && spaceFree; ++j)
+            {
+                for (int i = 0; i < shipFootprint.width && spaceFree; i++)
+                {
+                    int cellIndex = fromCoordsToIndex(shipFootprint.x + i, shipFootprint.y + j);
+                    map[cellIndex].shipIndex = ship.index;
+                }
+            }
+        }
+
+        return spaceFree;
     }
 
     public Vector3 snapWorldToGrid(Vector3 worldPos)
@@ -134,6 +208,11 @@ public class GridManager : MonoBehaviour
 
     private int fromCoordsToIndex(Vector2Int coords)
     {
-        return coords.y * gridSize.x + coords.x;
+        return fromCoordsToIndex(coords.x, coords.y);
+    }
+
+    private int fromCoordsToIndex(int x, int y)
+    {
+        return y * gridSize.x + x;
     }
 }

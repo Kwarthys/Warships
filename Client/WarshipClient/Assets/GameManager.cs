@@ -10,12 +10,17 @@ public class GameManager : MonoBehaviour
         instance = this;
     }
 
+    public GridManager playerBoard;
+    public GridManager opponentBoard;
+
     [SerializeField]
     private ShipScriptableObject[] shipsToPlace;
+    [SerializeField]
+    private Ship[] ships;
 
     private int placingIndex = -1;
     private GameObject placingGhost = null;
-
+    private int ghostLength;
     private bool donePlacing = false;
 
 
@@ -27,7 +32,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        
+        ships = new Ship[shipsToPlace.Length];
     }
 
     // Update is called once per frame
@@ -42,6 +47,9 @@ public class GameManager : MonoBehaviour
             if (placingIndex < shipsToPlace.Length)
             {
                 placingGhost = Instantiate(shipsToPlace[placingIndex].shipPrefab);
+                ghostLength = shipsToPlace[placingIndex].length;
+
+                ships[placingIndex] = new Ship(shipsToPlace[placingIndex], placingIndex);
             }
             else
             {
@@ -51,19 +59,29 @@ public class GameManager : MonoBehaviour
 
         }
 
-        if (tryGetMousePosOnBoard(out Vector3 point))
+        bool inGrid = false;
+        Vector3 point;
+        if (tryGetMousePosOnBoard(out point))
         {
-            placingGhost.transform.position = GridManager.instance.snapWorldToGrid(point);
+            if(playerBoard.snapShipToGrid(point, out Vector3 pos, ships[placingIndex].length, ships[placingIndex].orientation))
+            {
+                placingGhost.transform.position = pos;
+                inGrid = true;
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.R))
         {
+            ships[placingIndex].rotate();
             placingGhost.transform.Rotate(new Vector3(0, 90, 0));
         }
 
-        if(Input.GetMouseButtonDown(0))//left clic
+        if(Input.GetMouseButtonDown(0) && inGrid)//left clic
         {
-            placingGhost = null;
+            if (playerBoard.placeShipAt(point, ships[placingIndex]))
+            {
+                placingGhost = null;
+            }
         }
     }
 
