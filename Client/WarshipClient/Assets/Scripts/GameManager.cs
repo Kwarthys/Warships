@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
     private int placingIndex = -1;
     private GameObject placingGhost = null;
     private int ghostLength;
-    private bool donePlacing = false;
+    private bool donePlacing = false; //set true to bypass placement (usefull for debug)
 
 
     [SerializeField]
@@ -80,6 +80,7 @@ public class GameManager : MonoBehaviour
         {
             if (playerBoard.placeShipAt(point, ships[placingIndex]))
             {
+                placingGhost.GetComponent<ShipAnimator>().animate = true;
                 placingGhost = null;
             }
         }

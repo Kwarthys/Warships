@@ -258,6 +258,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4995196596315189032}
+  - component: {fileID: 583428643}
   m_Layer: 0
   m_Name: BattleShipModel
   m_TagString: Untagged
@@ -287,6 +288,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &583428643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4995196596315189035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32fc90e0d6035284cae7f4e68cfbc3ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  amps: {x: 1, y: 2}
+  speeds: {x: 0.5, y: 1}
+  upSpeed: 0.5
+  upAmp: 0.1
 --- !u!1 &4995196597125975281
 GameObject:
   m_ObjectHideFlags: 0
