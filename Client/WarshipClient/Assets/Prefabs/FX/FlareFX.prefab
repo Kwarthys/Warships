@@ -126,6 +126,7 @@ GameObject:
   - component: {fileID: 8105091897640311838}
   - component: {fileID: 8105091897640311833}
   - component: {fileID: 8105091897640311832}
+  - component: {fileID: -8603612000697747601}
   m_Layer: 0
   m_Name: FlareFX
   m_TagString: Untagged
@@ -226,3 +227,17 @@ VFXRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!114 &-8603612000697747601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105091897640311835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9fd8cd5d7264304da1d721020875f3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startHeight: 30
+  fallSpeed: 1

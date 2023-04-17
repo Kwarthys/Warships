@@ -55,7 +55,7 @@ public class GridManager : MonoBehaviour
             for(int i = 0; i < gridSize.x + 1; ++i)
             {
                 //BottomLeftPoint
-                Vector3 point = (new Vector3(i, 0, j) + offset) * cellUnitSize;
+                Vector3 point = (new Vector3(i, 0, j) + offset) * cellUnitSize + transform.position;
 
                 Instantiate(buoyPrefab, point, buoyPrefab.transform.rotation, transform);
             }
@@ -76,7 +76,7 @@ public class GridManager : MonoBehaviour
             else if (map[i].shipIndex != GridNode.WATER) color = Color.white;
 
             Gizmos.color = color;
-            Gizmos.DrawWireCube((new Vector3(coords.x, 0, coords.y) + offset + cellOffset) * cellUnitSize, Vector3.one * cellUnitSize);
+            Gizmos.DrawWireCube((new Vector3(coords.x, 0, coords.y) + offset + cellOffset) * cellUnitSize + transform.position, Vector3.one * cellUnitSize);
         }
     }
 
@@ -109,7 +109,7 @@ public class GridManager : MonoBehaviour
             }
         }
 
-        point =  (new Vector3(coords.x, 0, coords.y) + offset + cellOffset + evenOffset) * cellUnitSize;
+        point = (new Vector3(coords.x, 0, coords.y) + offset + cellOffset + evenOffset) * cellUnitSize + transform.position;
         return true;
     }
 
@@ -173,12 +173,33 @@ public class GridManager : MonoBehaviour
         }
 
         Vector2Int coords = map[cellIndex].coords;
-        return (new Vector3(coords.x, 0, coords.y) + offset + cellOffset) * cellUnitSize;
+        return (new Vector3(coords.x, 0, coords.y) + offset + cellOffset) * cellUnitSize + transform.position;
+
+    }
+
+    public bool trySnapWorldToGrid(Vector3 worldPos, out Vector3 gridPos)
+    {
+        int cellIndex = fromWorldToNode(worldPos);
+
+        if (cellIndex == -1)
+        {
+            gridPos = Vector3.zero;
+            return false;
+        }
+        else
+        {
+            Vector2Int coords = map[cellIndex].coords;
+            gridPos = (new Vector3(coords.x, 0, coords.y) + offset + cellOffset) * cellUnitSize + transform.position;
+            return true;
+        }
+
 
     }
 
     public int fromWorldToNode(Vector3 worldPos)
     {
+        worldPos -= transform.position;
+
         worldPos /= cellUnitSize;
         worldPos -= offset;
 

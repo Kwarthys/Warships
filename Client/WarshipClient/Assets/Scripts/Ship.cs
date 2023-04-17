@@ -46,7 +46,7 @@ public class Ship
         int w = 1;
         int h = 1;
 
-        Debug.Log("Pos:" + pos + " L:" + length + " O:" + orientation);
+        //Debug.Log("Pos:" + pos + " L:" + length + " O:" + orientation);
 
         if(orientation == Orientation.NORTH || orientation == Orientation.SOUTH)
         {
@@ -59,7 +59,7 @@ public class Ship
             x -= (length - 1) / 2;
         }
 
-        Debug.Log("x:" + x + " y:" + y + " w:" + w + " h:" + h);
+        //Debug.Log("x:" + x + " y:" + y + " w:" + w + " h:" + h);
 
         return new RectInt(x, y, w, h);
     }

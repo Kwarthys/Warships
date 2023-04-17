@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
     private int ghostLength;
     private bool donePlacing = false; //set true to bypass placement (usefull for debug)
 
+    private TargetingManager targetingManager;
+
 
     [SerializeField]
     private Camera theCamera;
@@ -33,14 +35,56 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         ships = new Ship[shipsToPlace.Length];
+        targetingManager = GetComponent<TargetingManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (donePlacing) return;
+        if (!donePlacing)
+        {
+            manageShipPlacement();
+        }
+        else
+        {
+            manageTargeting();
+        }        
+    }
 
-        if(placingGhost == null)
+    public bool tryGetMousePosOnBoard(out Vector3 point)
+    {
+        Ray ray = theCamera.ScreenPointToRay(Input.mousePosition);
+
+        float maxDistance = 250f;
+        if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, seaLayer))
+        {
+            point = hit.point;
+            return true;
+        }
+        else
+        {
+            point = Vector3.zero;
+            return false;
+        }
+    }
+
+    private void manageTargeting()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            if(tryGetMousePosOnBoard(out Vector3 point))
+            {
+                if(opponentBoard.trySnapWorldToGrid(point, out Vector3 gridPos))
+                {
+                    targetingManager.target(gridPos);
+                }
+            }
+        }
+    }
+
+    private void manageShipPlacement()
+    {
+        if (placingGhost == null)
         {
             //starting or placing a new one
             ++placingIndex;
@@ -63,7 +107,7 @@ public class GameManager : MonoBehaviour
         Vector3 point;
         if (tryGetMousePosOnBoard(out point))
         {
-            if(playerBoard.snapShipToGrid(point, out Vector3 pos, ships[placingIndex].length, ships[placingIndex].orientation))
+            if (playerBoard.snapShipToGrid(point, out Vector3 pos, ships[placingIndex].length, ships[placingIndex].orientation))
             {
                 placingGhost.transform.position = pos;
                 inGrid = true;
@@ -76,30 +120,13 @@ public class GameManager : MonoBehaviour
             placingGhost.transform.Rotate(new Vector3(0, 90, 0));
         }
 
-        if(Input.GetMouseButtonDown(0) && inGrid)//left clic
+        if (Input.GetMouseButtonDown(0) && inGrid)//left clic
         {
             if (playerBoard.placeShipAt(point, ships[placingIndex]))
             {
                 placingGhost.GetComponent<ShipAnimator>().animate = true;
                 placingGhost = null;
             }
-        }
-    }
-
-    public bool tryGetMousePosOnBoard(out Vector3 point)
-    {
-        Ray ray = theCamera.ScreenPointToRay(Input.mousePosition);
-
-        float maxDistance = 250f;
-        if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, seaLayer))
-        {
-            point = hit.point;
-            return true;
-        }
-        else
-        {
-            point = Vector3.zero;
-            return false;
         }
     }
 }
