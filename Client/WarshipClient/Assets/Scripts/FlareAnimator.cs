@@ -12,6 +12,9 @@ public class FlareAnimator : MonoBehaviour
     [SerializeField]
     private float fallSpeed = 1f;
 
+    [SerializeField]
+    private GameObject attachedLight;
+
     private float fallT = 0f;
 
     public bool needsUpdate { get; private set; } = false;
@@ -19,7 +22,7 @@ public class FlareAnimator : MonoBehaviour
     public void init()
     {
         fx = GetComponent<VisualEffect>();
-        fx.Stop();
+        stop();
     }
 
     public void updateAnimation()
@@ -56,11 +59,13 @@ public class FlareAnimator : MonoBehaviour
         Vector3 pos = transform.position;
         pos.y = startHeight;
         transform.position = pos;
+        attachedLight.SetActive(true);
     }
 
     public void stop()
     {
         needsUpdate = false;
         fx.Stop();
+        attachedLight.SetActive(false);
     }
 }

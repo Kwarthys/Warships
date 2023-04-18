@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
     private int placingIndex = -1;
     private GameObject placingGhost = null;
     private int ghostLength;
-    private bool donePlacing = false; //set true to bypass placement (usefull for debug)
+    private bool donePlacing = true; //set true to bypass placement (usefull for debug)
 
     private TargetingManager targetingManager;
 
@@ -76,7 +76,7 @@ public class GameManager : MonoBehaviour
             {
                 if(opponentBoard.trySnapWorldToGrid(point, out Vector3 gridPos))
                 {
-                    targetingManager.target(gridPos);
+                    targetingManager.target(gridPos, opponentBoard.fromWorldToNode(point));
                 }
             }
         }

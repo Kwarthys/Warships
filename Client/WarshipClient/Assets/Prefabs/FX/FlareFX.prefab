@@ -241,3 +241,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startHeight: 30
   fallSpeed: 1
+  attachedLight: {fileID: 8105091897106212641}
