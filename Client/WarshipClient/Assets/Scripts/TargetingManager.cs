@@ -13,7 +13,6 @@ public class TargetingManager : MonoBehaviour
     private int[] flareToTarget;
     private int[] targetsOrder;
     private int availableShots = 5;
-    private int nextFlareIndex = 0;
 
     private int shotCount = 1;
 
