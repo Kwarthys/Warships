@@ -7,11 +7,18 @@
 
 #include "Board.h"
 #include "Ship.h"
+#include "CommandManager.h"
 
 using namespace std;
 
 int main()
 {
+    /**** SERIALIZATION TESTING *****/
+    CommandManager cm;
+    cm.testSerialization();
+
+    /**** BOARD TESTING *****/
+    /*
     Board board(10,10);
 
     board.debugDisplayMap();
@@ -36,7 +43,9 @@ int main()
     board.shoot(Vector2(9, 7));
     board.shoot(Vector2(9, 8));
     board.debugDisplayMap();
+    */
 
+    /**** NETWORK TESTING *****/
     /*
     cout << "Hello Warship Server World!" << endl;
 

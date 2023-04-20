@@ -15,13 +15,25 @@ public class CommandManager : MonoBehaviour
         nameCommand.param = 0;
         nameCommand.data = "Zykyflex";
 
-        displayStringCommand(nameCommand);
+        displayCommand(nameCommand);
 
         byte[] c = serializeCommand(nameCommand);
 
         Command deserialized = deserializeCommand(c);
 
-        displayStringCommand((StringCommand)deserialized);
+        displayCommand(deserialized);
+
+        IntArrayCommand intCommand = new IntArrayCommand();
+        intCommand.id = CommandID.TargetGrid;
+        intCommand.param = 1;
+        intCommand.data =  new int[]{ 1,2,3,4,5,6,7,8,9};
+
+        displayCommand(intCommand);
+
+        c = serializeCommand(intCommand);
+        deserialized = deserializeCommand(c);
+
+        displayCommand(deserialized);
 
 
     }
@@ -70,6 +82,31 @@ public class CommandManager : MonoBehaviour
 
     }
 
+    public byte[] serializeCommand(IntArrayCommand command)
+    {
+        List<byte> serialized = new List<byte>();
+
+        serialized.Add((byte)command.id);
+        serialized.Add((byte)command.param);
+
+        for (int i = 0; i < command.data.Length; i++)
+        {
+            byte b;
+            if(command.data[i] > 255)
+            {
+                Debug.LogWarning("Serializing int greater than 255 to 255.");
+                b = 255;
+            }
+            else
+            {
+                b = (byte)command.data[i];
+            }
+            serialized.Add(b);
+        }
+
+        return serialized.ToArray();
+    }
+
     public byte[] serializeCommand(StringCommand command)
     {
         List<byte> serialized = new List<byte>();
@@ -85,9 +122,35 @@ public class CommandManager : MonoBehaviour
         return serialized.ToArray();
     }
 
+    public void displayCommand(Command c)
+    {
+        if(c.id == CommandID.NameSend)
+        {
+            displayStringCommand((StringCommand)c);
+        }
+        else
+        {
+            displayIntArrayCommand((IntArrayCommand)c);
+        }
+    }
+
     public void displayStringCommand(StringCommand c)
     {
         Debug.Log(c.id + " " + c.param + ": " + c.data);
+    }
+
+    public void displayIntArrayCommand(IntArrayCommand c)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.Append(c.id + " " + c.param + ": ");
+
+        for (int i = 0; i < c.data.Length; i++)
+        {
+            sb.Append(c.data[i]);
+            sb.Append(" ");
+        }
+
+        Debug.Log(sb.ToString());
     }
 }
 

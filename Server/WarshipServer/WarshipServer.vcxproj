@@ -140,6 +140,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
+    <ClCompile Include="Command.cpp" />
+    <ClCompile Include="CommandManager.cpp" />
     <ClCompile Include="Footprint.cpp" />
     <ClCompile Include="MapNode.cpp" />
     <ClCompile Include="Ship.cpp" />
@@ -148,6 +150,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.h" />
+    <ClInclude Include="Command.h" />
+    <ClInclude Include="CommandManager.h" />
     <ClInclude Include="Footprint.h" />
     <ClInclude Include="MapNode.h" />
     <ClInclude Include="Ship.h" />
