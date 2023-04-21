@@ -144,6 +144,7 @@
     <ClCompile Include="CommandManager.cpp" />
     <ClCompile Include="Footprint.cpp" />
     <ClCompile Include="MapNode.cpp" />
+    <ClCompile Include="NetworkManager.cpp" />
     <ClCompile Include="Ship.cpp" />
     <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="WarshipServer.cpp" />
@@ -154,6 +155,7 @@
     <ClInclude Include="CommandManager.h" />
     <ClInclude Include="Footprint.h" />
     <ClInclude Include="MapNode.h" />
+    <ClInclude Include="NetworkManager.h" />
     <ClInclude Include="Ship.h" />
     <ClInclude Include="Vector2.h" />
   </ItemGroup>

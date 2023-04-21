@@ -2,20 +2,19 @@
 //
 
 #include <iostream>
-//#include <winsock2.h>
-//#pragma comment(lib, "ws2_32.lib")
 
 #include "Board.h"
 #include "Ship.h"
 #include "CommandManager.h"
+#include "NetworkManager.h"
 
 using namespace std;
 
 int main()
 {
     /**** SERIALIZATION TESTING *****/
-    CommandManager cm;
-    cm.testSerialization();
+    //CommandManager cm;
+    //cm.testSerialization();
 
     /**** BOARD TESTING *****/
     /*
@@ -45,53 +44,13 @@ int main()
     board.debugDisplayMap();
     */
 
-    /**** NETWORK TESTING *****/
-    /*
-    cout << "Hello Warship Server World!" << endl;
+    /**** NETWORK & SERIALIZATION TESTING *****/
+    NetworkManager networkManager;
+    CommandManager commandManager;
 
-    WSADATA WSAData;
-    WSAStartup(MAKEWORD(2, 0), &WSAData);
-
-    SOCKET s;
-    s = socket(AF_INET, SOCK_STREAM, 0);
-
-    SOCKADDR_IN sin;
-    sin.sin_addr.s_addr = INADDR_ANY;
-    sin.sin_family = AF_INET;
-    sin.sin_port = htons(4242);
-
-    bind(s, (SOCKADDR*)&sin, sizeof(sin));
-
-    listen(s, 0);
-
-    bool received = false;
+    networkManager.startServer(commandManager);
 
 
-    SOCKADDR_IN csin;
-    SOCKET csock;
-
-    while (!received)
-    {
-        int sinsize = sizeof(csin);
-        csock = accept(s, (SOCKADDR*)&csin, &sinsize);
-
-        if (csock != INVALID_SOCKET)
-        {
-            cout << "Sending hello to client" << endl;
-            send(csock, "HELLO CLIENT\r\n", 14, 0);
-
-            received = true;
-        }
-        else
-        {
-            cout << "listening ..." << endl;
-        }
-    }
-
-    closesocket(csock);
-    WSACleanup();
-
-    */
     return 0;
 }
 

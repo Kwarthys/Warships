@@ -62,7 +62,7 @@ Command* CommandManager::deserialize(char* buf, int len)
 
 		std::ostringstream stream;
 		
-		for (size_t i = 2; i < len; i++)
+		for (int i = 2; i < len; i++)
 		{
 			stream << buf[i];
 		}
@@ -78,7 +78,7 @@ Command* CommandManager::deserialize(char* buf, int len)
 		c->id = id;
 		c->parameter = buf[1];
 
-		for (size_t i = 2; i < len; i++)
+		for (int i = 2; i < len; i++)
 		{
 			c->data.push_back(buf[i]);
 		}

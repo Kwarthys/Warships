@@ -8,8 +8,11 @@ using UnityEngine;
 public class NetworkManager : MonoBehaviour
 {
     // Start is called before the first frame update
+    private CommandManager commandManager;
+
     void Start()
     {
+        commandManager = GetComponent<CommandManager>();
         test();
     }
 
@@ -30,10 +33,12 @@ public class NetworkManager : MonoBehaviour
         Debug.Log("TCP Connected");
 
         byte[] rawData = new byte[1024];
-        socket.Receive(rawData);
-        string data = Encoding.Default.GetString(rawData);
+        int len = socket.Receive(rawData);
+        Command c = commandManager.deserializeCommand(rawData, len);
+        commandManager.displayCommand(c);
 
-        Debug.Log("Received " + data);
+        //string data = Encoding.Default.GetString(rawData);
+        //Debug.Log("Received " + data);
 
         socket.Shutdown(SocketShutdown.Both);
     }

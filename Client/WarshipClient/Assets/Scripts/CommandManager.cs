@@ -7,7 +7,8 @@ public class CommandManager : MonoBehaviour
 {
     public enum CommandID { IDAttrib, NameSend, TargetGrid, FireGrid, FireResult, ShipSunk, EndGame }
 
-    private void Start()
+
+    public void testSerialization()
     {
         //TEST
         StringCommand nameCommand = new StringCommand();
@@ -17,9 +18,11 @@ public class CommandManager : MonoBehaviour
 
         displayCommand(nameCommand);
 
-        byte[] c = serializeCommand(nameCommand);
+        byte[] buf = new byte[255];
 
-        Command deserialized = deserializeCommand(c);
+        int len = serializeCommand(nameCommand, buf);
+
+        Command deserialized = deserializeCommand(buf, len);
 
         displayCommand(deserialized);
 
@@ -30,15 +33,15 @@ public class CommandManager : MonoBehaviour
 
         displayCommand(intCommand);
 
-        c = serializeCommand(intCommand);
-        deserialized = deserializeCommand(c);
+        len = serializeCommand(intCommand, buf);
+        deserialized = deserializeCommand(buf, len);
 
         displayCommand(deserialized);
 
 
     }
 
-    public Command deserializeCommand(byte[] rawCommand)
+    public Command deserializeCommand(byte[] rawCommand, int len)
     {
         //Command Code
         CommandID cid = (CommandID)rawCommand[0];
@@ -53,7 +56,7 @@ public class CommandManager : MonoBehaviour
 
             StringBuilder builder = new StringBuilder();
 
-            for (int i = 2; i < rawCommand.Length; i++)
+            for (int i = 2; i < len; i++)
             {
                 builder.Append((char)rawCommand[i]);
             }
@@ -69,8 +72,8 @@ public class CommandManager : MonoBehaviour
             command.id = cid;
             command.param = parameter;
 
-            int[] data = new int[rawCommand.Length - 2];
-            for (int i = 2; i < rawCommand.Length; i++)
+            int[] data = new int[len - 2];
+            for (int i = 2; i < len; i++)
             {
                 data[i - 2] = rawCommand[i];
             }
@@ -82,14 +85,25 @@ public class CommandManager : MonoBehaviour
 
     }
 
-    public byte[] serializeCommand(IntArrayCommand command)
+    public int serializeCommand(Command command, byte[] buf)
     {
-        List<byte> serialized = new List<byte>();
+        if(command.id == CommandID.NameSend)
+        {
+            return serializeCommand((StringCommand)command, buf);
+        }
+        else
+        {
+            return serializeCommand((IntArrayCommand)command, buf);
+        }
+    }
 
-        serialized.Add((byte)command.id);
-        serialized.Add((byte)command.param);
+    public int serializeCommand(IntArrayCommand command, byte[] buf)
+    {
+        buf[0] = (byte)command.id;
+        buf[1] = (byte)command.param;
 
-        for (int i = 0; i < command.data.Length; i++)
+        int i;
+        for (i = 0; i < command.data.Length; i++)
         {
             byte b;
             if(command.data[i] > 255)
@@ -101,25 +115,24 @@ public class CommandManager : MonoBehaviour
             {
                 b = (byte)command.data[i];
             }
-            serialized.Add(b);
+            buf[i+2] = b;
         }
 
-        return serialized.ToArray();
+        return i+2;
     }
 
-    public byte[] serializeCommand(StringCommand command)
+    public int serializeCommand(StringCommand command, byte[] buf)
     {
-        List<byte> serialized = new List<byte>();
+        buf[0] = (byte)command.id;
+        buf[1] = (byte)command.param;
 
-        serialized.Add((byte)command.id);
-        serialized.Add((byte)command.param);
-
-        for (int i = 0; i < command.data.Length; i++)
+        int i;
+        for (i = 0; i < command.data.Length; i++)
         {
-            serialized.Add((byte)command.data[i]);
+            buf[i+2] = (byte)command.data[i];
         }
 
-        return serialized.ToArray();
+        return i + 2;
     }
 
     public void displayCommand(Command c)
