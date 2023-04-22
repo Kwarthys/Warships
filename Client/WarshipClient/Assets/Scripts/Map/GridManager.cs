@@ -10,9 +10,6 @@ public class GridManager : MonoBehaviour
     [SerializeField]
     private float cellUnitSize = 1;
 
-    [SerializeField]
-    private GameObject buoyPrefab;
-
     private Vector3 offset;
     private Vector3 cellOffset;
 
@@ -48,6 +45,47 @@ public class GridManager : MonoBehaviour
         spawnGridBuoys();
     }
 
+    public void testHit()
+    {
+        int[] ids = new int[5] { 0, 10, 20, 30, 40 };
+        int[] shipIds = new int[5] {0, 1, 1, 1, 0};
+
+        receiveHits(ids, shipIds);
+    }
+
+    public void receiveHits(int[] gridIndecies, int[] hitShipIndecies)
+    {
+        int size = gridIndecies.Length; //they should have all the same size
+
+        if(hitShipIndecies.Length != size)
+        {
+            Debug.LogError("GridManager-ReceiveHits arrays are of different sizes: " + gridIndecies.Length + " " + hitShipIndecies.Length);
+            return;
+        }
+
+
+        for (int i = 0; i < size; i++)
+        {
+            if(map[gridIndecies[i]].hit == false)
+            {
+                map[gridIndecies[i]].hit = true;
+
+                Vector3 hitNodeWorldPos = fromIndexToWorld(gridIndecies[i]);
+
+                if(hitShipIndecies[i] != 0)
+                {
+                    //Hit
+                    Instantiate(GameManager.instance.getHitFXPrefab(), hitNodeWorldPos, GameManager.instance.getHitFXPrefab().transform.rotation);
+                }
+                else
+                {
+                    //Miss
+                    Instantiate(GameManager.instance.getMissBuoyPrefab(), hitNodeWorldPos, GameManager.instance.getMissBuoyPrefab().transform.rotation);
+                }
+            }
+        }
+    }
+
     private void spawnGridBuoys()
     {
         for(int j = 0; j < gridSize.y + 1; ++j)
@@ -57,7 +95,7 @@ public class GridManager : MonoBehaviour
                 //BottomLeftPoint
                 Vector3 point = (new Vector3(i, 0, j) + offset) * cellUnitSize + transform.position;
 
-                Instantiate(buoyPrefab, point, buoyPrefab.transform.rotation, transform);
+                Instantiate(GameManager.instance.getBuoyPrefab(), point, GameManager.instance.getBuoyPrefab().transform.rotation, transform);
             }
         }
     }
@@ -194,6 +232,17 @@ public class GridManager : MonoBehaviour
         }
 
 
+    }
+
+    private Vector3 fromIndexToWorld(int index)
+    {
+        Vector2Int coords2d = fromIndexToCoords(index);
+        Vector3 worldPos = new Vector3(coords2d.x, 0, coords2d.y);
+        worldPos += offset + cellOffset;
+        worldPos *= cellUnitSize;
+        worldPos += transform.position;
+
+        return worldPos;
     }
 
     public int fromWorldToNode(Vector3 worldPos)

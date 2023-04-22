@@ -36,8 +36,8 @@ void NetworkManager::startServer(CommandManager& cm)
 
             StringCommand sc;
             sc.id = Command::NameSend;
-            sc.parameter = 1;
-            sc.data = "Zykyflex";
+            sc.parameter = 10;
+            sc.data = "ServersZykyflex";
 
             char buf[255];
 
@@ -56,4 +56,6 @@ void NetworkManager::startServer(CommandManager& cm)
 
     closesocket(csock);
     WSACleanup();
+
+    cout << "Properly closed" << endl;
 }

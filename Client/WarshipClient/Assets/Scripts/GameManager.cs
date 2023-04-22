@@ -25,6 +25,16 @@ public class GameManager : MonoBehaviour
 
     private TargetingManager targetingManager;
 
+    [SerializeField]
+    private GameObject buoyPrefab;
+    [SerializeField]
+    private GameObject missBuoyPrefab;
+    [SerializeField]
+    private GameObject hitFXPrefab;
+    public GameObject getBuoyPrefab() { return buoyPrefab; }
+    public GameObject getHitFXPrefab() { return hitFXPrefab; }
+    public GameObject getMissBuoyPrefab() { return missBuoyPrefab; }
+
 
     [SerializeField]
     private Camera theCamera;
