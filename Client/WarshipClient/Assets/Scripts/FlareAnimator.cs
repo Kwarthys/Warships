@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VFX;
 
-public class FlareAnimator : MonoBehaviour
+public class FlareAnimator : FXController
 {
-    public VisualEffect fx { get; private set; }
-
     [SerializeField]
     private float startHeight = 50f;
     [SerializeField]
@@ -18,12 +16,6 @@ public class FlareAnimator : MonoBehaviour
     private float fallT = 0f;
 
     public bool needsUpdate { get; private set; } = false;
-
-    public void init()
-    {
-        fx = GetComponent<VisualEffect>();
-        stop();
-    }
 
     public void updateAnimation()
     {
@@ -49,7 +41,7 @@ public class FlareAnimator : MonoBehaviour
 
     }
 
-    public void play()
+    public override void play()
     {
         needsUpdate = true;
         fallT = 0f;
@@ -62,7 +54,7 @@ public class FlareAnimator : MonoBehaviour
         attachedLight.SetActive(true);
     }
 
-    public void stop()
+    public override void stop()
     {
         needsUpdate = false;
         fx.Stop();

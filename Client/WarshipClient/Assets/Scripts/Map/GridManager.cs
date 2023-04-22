@@ -17,6 +17,8 @@ public class GridManager : MonoBehaviour
 
     private GridNode[] map; //map stores -1 for water or the index of the ship located there, and if it was hit
 
+    private Dictionary<int, List<FXController>> shipIndexToHitObjects = new Dictionary<int, List<FXController>>();
+
     void Start()
     {
         map = new GridNode[gridSize.x * gridSize.y];
@@ -45,12 +47,43 @@ public class GridManager : MonoBehaviour
         spawnGridBuoys();
     }
 
+
+    private bool testingHits = false;
     public void testHit()
     {
-        int[] ids = new int[5] { 0, 10, 20, 30, 40 };
-        int[] shipIds = new int[5] {0, 1, 1, 1, 0};
+        if(!testingHits)
+        {
+            int[] ids = new int[5] { 0, 10, 20, 30, 40 };
+            int[] shipIds = new int[5] {0, 1, 1, 1, 0};
+            receiveHits(ids, shipIds);
 
-        receiveHits(ids, shipIds);
+            testingHits = true;
+        }
+        else
+        {
+            notifyShipSunk(1);
+        }
+
+    }
+
+    public void notifyShipSunk(int shipSunkIndex)
+    {
+        if(!shipIndexToHitObjects.ContainsKey(shipSunkIndex))
+        {
+            Debug.LogError("Sunk ship does not have any hit object");
+            return;
+        }
+
+        foreach (FXController hitObject in shipIndexToHitObjects[shipSunkIndex])
+        {
+            Vector3 objectPos = hitObject.transform.position;
+            hitObject.stop();
+            Destroy(hitObject.gameObject, 20);
+
+            Instantiate(GameManager.instance.getSunkFXPrefab(), objectPos, Quaternion.identity);
+        }
+
+        shipIndexToHitObjects.Remove(shipSunkIndex);
     }
 
     public void receiveHits(int[] gridIndecies, int[] hitShipIndecies)
@@ -75,7 +108,16 @@ public class GridManager : MonoBehaviour
                 if(hitShipIndecies[i] != 0)
                 {
                     //Hit
-                    Instantiate(GameManager.instance.getHitFXPrefab(), hitNodeWorldPos, GameManager.instance.getHitFXPrefab().transform.rotation);
+                    FXController hitObject = Instantiate(GameManager.instance.getHitFXPrefab(), hitNodeWorldPos, GameManager.instance.getHitFXPrefab().transform.rotation).GetComponent<FXController>();
+                    hitObject.init();
+                    hitObject.play();
+
+                    if(!shipIndexToHitObjects.ContainsKey(hitShipIndecies[i]))
+                    {
+                        shipIndexToHitObjects[hitShipIndecies[i]] = new List<FXController>();
+                    }
+
+                    shipIndexToHitObjects[hitShipIndecies[i]].Add(hitObject);
                 }
                 else
                 {

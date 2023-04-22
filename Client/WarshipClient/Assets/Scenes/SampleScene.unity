@@ -1136,6 +1136,8 @@ MonoBehaviour:
     type: 3}
   hitFXPrefab: {fileID: 6649854852966401891, guid: 1e2a9a3999825ae48840a530f97fd6dc,
     type: 3}
+  sunkFXPrefab: {fileID: 8651125189419254805, guid: d05f335403c2f7a4997a464a7ba8bfae,
+    type: 3}
   theCamera: {fileID: 330585545}
   seaLayer:
     serializedVersion: 2

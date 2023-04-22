@@ -31,9 +31,12 @@ public class GameManager : MonoBehaviour
     private GameObject missBuoyPrefab;
     [SerializeField]
     private GameObject hitFXPrefab;
+    [SerializeField]
+    private GameObject sunkFXPrefab;
     public GameObject getBuoyPrefab() { return buoyPrefab; }
     public GameObject getHitFXPrefab() { return hitFXPrefab; }
     public GameObject getMissBuoyPrefab() { return missBuoyPrefab; }
+    public GameObject getSunkFXPrefab() { return sunkFXPrefab; }
 
 
     [SerializeField]
