@@ -10,8 +10,10 @@ public class GameManager : MonoBehaviour
         instance = this;
     }
 
-    public GridManager playerBoard;
-    public GridManager opponentBoard;
+
+    private List<Player> players = new List<Player>();
+    private Player localPlayer; //shortcut to frequently used localPlayer, also present in players
+    private List<int> playerIndexToID = new List<int>();
 
     [SerializeField]
     private ShipScriptableObject[] shipsToPlace;
@@ -23,8 +25,8 @@ public class GameManager : MonoBehaviour
     private int ghostLength;
     private bool donePlacing = true; //set true to bypass placement (usefull for debug)
 
-    private TargetingManager targetingManager;
-
+    [SerializeField]
+    private GameObject flarePrefab;
     [SerializeField]
     private GameObject buoyPrefab;
     [SerializeField]
@@ -33,11 +35,11 @@ public class GameManager : MonoBehaviour
     private GameObject hitFXPrefab;
     [SerializeField]
     private GameObject sunkFXPrefab;
+    public GameObject getFlarePrefab() { return flarePrefab; }
     public GameObject getBuoyPrefab() { return buoyPrefab; }
     public GameObject getHitFXPrefab() { return hitFXPrefab; }
     public GameObject getMissBuoyPrefab() { return missBuoyPrefab; }
     public GameObject getSunkFXPrefab() { return sunkFXPrefab; }
-
 
     [SerializeField]
     private Camera theCamera;
@@ -45,10 +47,30 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private LayerMask seaLayer;
 
+    public string localPlayerName = "Player";
+
+    public Player registerPlayer(int index, string playerName, int playerPlacement)
+    {
+        GameObject playerObject = new GameObject("Player" + index + "Object");
+        playerObject.transform.SetParent(transform);//keeping editor hierarchy clear, should not do that on build
+        Player player = playerObject.AddComponent<Player>();
+        player.initPlayer(index, playerName, Vector3.zero);//TODO vector3 adjusted with player placement
+
+        playerIndexToID.Add(index);
+        players.Add(player);
+
+        return player;
+    }
+
+    public void registerLocalPlayerID(int id, int playerPlacement)
+    {
+        localPlayer = registerPlayer(id, localPlayerName, playerPlacement);
+        //send name to server
+    }
+
     void Start()
     {
         ships = new Ship[shipsToPlace.Length];
-        targetingManager = GetComponent<TargetingManager>();
     }
 
     // Update is called once per frame
@@ -87,11 +109,27 @@ public class GameManager : MonoBehaviour
         {
             if(tryGetMousePosOnBoard(out Vector3 point))
             {
-                if(opponentBoard.trySnapWorldToGrid(point, out Vector3 gridPos))
+                for (int i = 0; i < players.Count; i++)
                 {
-                    targetingManager.target(gridPos, opponentBoard.fromWorldToNode(point));
+                    if (players[i].gridManager.trySnapWorldToGrid(point, out Vector3 gridPos))
+                    {
+                        //This player is targeted by Local player
+                        localPlayer.targetingManager.target(gridPos, players[i].playerID, players[i].gridManager.fromWorldToNode(gridPos));
+                        //send target to network
+                    }
                 }
             }
+        }
+    }
+
+    public void registerOpponentTargeting(int attackingPlayerId, int targetGridId, int[] targetNodeIds)
+    {
+        Player attacker = getPlayerByID(attackingPlayerId);
+        Player attacked = getPlayerByID(targetGridId);
+
+        for (int i = 0; i < targetNodeIds.Length; i++)
+        {
+            attacker.targetingManager.target(attacked.gridManager.fromIndexToWorld(targetNodeIds[i]), targetGridId, targetNodeIds[i]);
         }
     }
 
@@ -120,7 +158,7 @@ public class GameManager : MonoBehaviour
         Vector3 point;
         if (tryGetMousePosOnBoard(out point))
         {
-            if (playerBoard.snapShipToGrid(point, out Vector3 pos, ships[placingIndex].length, ships[placingIndex].orientation))
+            if (localPlayer.gridManager.snapShipToGrid(point, out Vector3 pos, ships[placingIndex].length, ships[placingIndex].orientation))
             {
                 placingGhost.transform.position = pos;
                 inGrid = true;
@@ -135,11 +173,25 @@ public class GameManager : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0) && inGrid)//left clic
         {
-            if (playerBoard.placeShipAt(point, ships[placingIndex]))
+            if (localPlayer.gridManager.placeShipAt(point, ships[placingIndex]))
             {
                 placingGhost.GetComponent<ShipAnimator>().animate = true;
                 placingGhost = null;
             }
         }
+    }
+
+    private Player getPlayerByID(int playerID)
+    {
+        for (int i = 0; i < playerIndexToID.Count; i++)
+        {
+            if(playerIndexToID[i] == playerID)
+            {
+                return players[i];
+            }
+        }
+
+        Debug.LogError("Could not retreive Player by ID" + playerID);
+        return null;
     }
 }

@@ -184,6 +184,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bed001eb45ad0f43b7ed4c770328ee5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  associatedPlayerIndex: -1
   gridSize: {x: 10, y: 10}
   cellUnitSize: 4
 --- !u!4 &87330970
@@ -1130,6 +1131,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 44cdb2d7e4b64464c983be5d6b7750aa, type: 2}
   - {fileID: 11400000, guid: 1517cd4905e490d4080792ddc7b12763, type: 2}
   - {fileID: 11400000, guid: 8a88e78ef90837048ac16ac3e8fd8f8e, type: 2}
+  flarePrefab: {fileID: 8105091897640311835, guid: cff56dab703c093439c0f73bb5a94b4a,
+    type: 3}
   buoyPrefab: {fileID: 5341789059622504025, guid: ae8ae44dbc39a7a408b4590d40cc4bd9,
     type: 3}
   missBuoyPrefab: {fileID: 1523095635657332764, guid: f902a6608342f3e42b4029485706ca44,
@@ -1138,6 +1141,7 @@ MonoBehaviour:
     type: 3}
   sunkFXPrefab: {fileID: 8651125189419254805, guid: d05f335403c2f7a4997a464a7ba8bfae,
     type: 3}
+  playerName: Player
   theCamera: {fileID: 330585545}
   seaLayer:
     serializedVersion: 2
@@ -1151,11 +1155,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1435995924}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e55424b94f995d40bd9fe4dcbc42c6f, type: 3}
+  m_Script: {fileID: 11500000, guid: 1f9495477f3205a4b8fa3a2fbc787e47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flarePrefab: {fileID: 8105091897640311835, guid: cff56dab703c093439c0f73bb5a94b4a,
-    type: 3}
 --- !u!1 &1453453703
 GameObject:
   m_ObjectHideFlags: 0
@@ -1348,6 +1350,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bed001eb45ad0f43b7ed4c770328ee5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  associatedPlayerIndex: -1
   gridSize: {x: 10, y: 10}
   cellUnitSize: 4
 --- !u!4 &1654959858

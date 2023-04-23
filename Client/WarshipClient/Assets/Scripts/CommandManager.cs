@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CommandManager : MonoBehaviour
 {
-    public enum CommandID { IDAttrib, NameSend, TargetGrid, FireGrid, FireResult, ShipSunk, EndGame }
+    public enum CommandID { IDAttrib, NameSend, TargetGrid, FireGrid, FireResult, ShipSunk, EndGame, PlaceShip }
 
 
     public void testSerialization()
@@ -155,7 +155,10 @@ public class CommandManager : MonoBehaviour
     public void displayIntArrayCommand(IntArrayCommand c)
     {
         StringBuilder sb = new StringBuilder();
-        sb.Append(c.id + " " + c.param + ": ");
+        sb.Append(c.id);
+        sb.Append(" ");
+        sb.Append(c.param);
+        sb.Append(": ");
 
         for (int i = 0; i < c.data.Length; i++)
         {

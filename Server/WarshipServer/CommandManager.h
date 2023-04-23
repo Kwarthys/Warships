@@ -3,6 +3,7 @@
 #include <vector>
 #include <sstream>
 #include <iostream>
+#include <memory>
 
 #include "Command.h"
 
@@ -13,7 +14,7 @@ class CommandManager
 		int serializeIntArrayCommand(IntArrayCommand& c, char* buf);
 		int serializeStringCommand(StringCommand& c, char* buf);
 
-		Command* deserialize(char* buf, int len);
+		Command* deserialize(const char const * buf, const int len) const;
 
 		void testSerialization();
 

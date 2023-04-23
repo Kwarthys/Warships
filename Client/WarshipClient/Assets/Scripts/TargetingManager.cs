@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class TargetingManager : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject flarePrefab;
-
     private int flarePoolSize = 10;//must be > availableShots to allow for staging flares, letting time for animation to complete
     private FlareAnimator[] flares;
     private int[] flareUseOrder;
@@ -16,7 +13,7 @@ public class TargetingManager : MonoBehaviour
 
     private int shotCount = 1;
 
-    private int[] targets;
+    private Vector2Int[] targets;
 
     private void Start()
     {
@@ -27,7 +24,7 @@ public class TargetingManager : MonoBehaviour
         /** setting up pool of flares **/
         for (int i = 0; i < flares.Length; i++)
         {
-            GameObject flare = Instantiate(flarePrefab, transform);
+            GameObject flare = Instantiate(GameManager.instance.getFlarePrefab(), transform);
             FlareAnimator animator = flare.GetComponent<FlareAnimator>();
             animator.init();
 
@@ -37,19 +34,21 @@ public class TargetingManager : MonoBehaviour
         resetStates(availableShots);
     }
 
+    public Vector2Int[] getTargetedIds() { return targets; }
+
     public void resetStates(int newAvailableShots)
     {
         availableShots = newAvailableShots;
         shotCount = 1;
 
-        targets = new int[newAvailableShots];
+        targets = new Vector2Int[newAvailableShots];
 
         targetsOrder = new int[availableShots];
 
         for (int i = 0; i < newAvailableShots; i++)
         {
             targetsOrder[i] = 0;
-            targets[i] = -1;
+            targets[i] = new Vector2Int(-1,-1);
         }
 
         for (int i = 0; i < flarePoolSize; i++)
@@ -59,13 +58,13 @@ public class TargetingManager : MonoBehaviour
         }
     }
 
-    public void target(Vector3 worldPos, int gridIndex)
+    public void target(Vector3 worldPos, int gridIndex, int nodeIndex)
     {
         bool flareAlreadyOnSite = false;
         int onSiteTargetIndex = -1;
         for (int i = 0; i < targets.Length && !flareAlreadyOnSite; i++)
         {
-            if(targets[i] == gridIndex)
+            if(targets[i].x == gridIndex && targets[i].y == nodeIndex)
             {
                 flareAlreadyOnSite = true;
                 onSiteTargetIndex = i;
@@ -77,7 +76,7 @@ public class TargetingManager : MonoBehaviour
             //Not shooting, but cancelling a target
             int flareToRemove = getFlareFromTargetIndex(onSiteTargetIndex);
             removeFlare(flareToRemove);
-            targets[onSiteTargetIndex] = -1;
+            targets[onSiteTargetIndex] = new Vector2Int(-1,-1);
             targetsOrder[onSiteTargetIndex] = 0;
         }
         else
@@ -89,7 +88,7 @@ public class TargetingManager : MonoBehaviour
             {
                 //No need to shut down
                 placeFlare(flareIndex, targetIndex, worldPos);
-                targets[targetIndex] = gridIndex;
+                targets[targetIndex] = new Vector2Int(gridIndex, nodeIndex);
             }
             else
             {
@@ -100,7 +99,7 @@ public class TargetingManager : MonoBehaviour
 
                 removeFlare(flareToShutIndex);
                 placeFlare(flareIndex, oldestTargetIndex, worldPos);
-                targets[oldestTargetIndex] = gridIndex;
+                targets[oldestTargetIndex] = new Vector2Int(gridIndex, nodeIndex);
             }
 
         }

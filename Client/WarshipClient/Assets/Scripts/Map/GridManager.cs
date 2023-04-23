@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class GridManager : MonoBehaviour
 {
-
     [SerializeField]
     private Vector2Int gridSize = new Vector2Int(10,10);
     [SerializeField]
@@ -276,7 +275,7 @@ public class GridManager : MonoBehaviour
 
     }
 
-    private Vector3 fromIndexToWorld(int index)
+    public Vector3 fromIndexToWorld(int index)
     {
         Vector2Int coords2d = fromIndexToCoords(index);
         Vector3 worldPos = new Vector3(coords2d.x, 0, coords2d.y);

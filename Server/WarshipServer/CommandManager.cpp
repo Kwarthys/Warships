@@ -45,7 +45,7 @@ int CommandManager::serializeStringCommand(StringCommand& c, char* buf)
 }
 
 
-Command* CommandManager::deserialize(char* buf, int len)
+Command* CommandManager::deserialize(const char const * buf, const int len) const
 {
 	Command::CommandID id = (Command::CommandID)buf[0];
 
