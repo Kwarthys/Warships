@@ -25,10 +25,14 @@ public class NetworkManager : MonoBehaviour
 
     public SharedCommandBuffer commandBuffer { get; private set; } = new SharedCommandBuffer();
 
+    private Thread tcpReader;
+
     void Start()
     {
         commandManager = GetComponent<CommandManager>();
         //test();
+
+        startTCP();
     }
 
     private void Update()
@@ -43,7 +47,7 @@ public class NetworkManager : MonoBehaviour
     {
         socket = setupTCPSocket();
 
-        Thread tcpReader = new Thread(infiniteReadFromServer);
+        tcpReader = new Thread(infiniteReadFromServer);
         tcpReader.Start();
     }
 
@@ -76,6 +80,7 @@ public class NetworkManager : MonoBehaviour
     private void OnApplicationQuit()
     {
         socket.Shutdown(SocketShutdown.Both);//we don't even say goodbye :(
+        tcpReader.Interrupt();
     }
 
     //do not call on main thread
@@ -85,11 +90,14 @@ public class NetworkManager : MonoBehaviour
         {
             byte[] rawData = new byte[1024];
             int len = socket.Receive(rawData);
-            Command c = commandManager.deserializeCommand(rawData, len);
-            commandBuffer.waitToAdd(c);
+            if(len > 0)
+            {
+                Command c = commandManager.deserializeCommand(rawData, len);
+                commandBuffer.waitToAdd(c);
 #if UNITY_EDITOR
-            if(debugConsoleDisplay)commandManager.displayCommand(c);
+                if(debugConsoleDisplay)commandManager.displayCommand(c);
 #endif
+            }
         }
     }
 }

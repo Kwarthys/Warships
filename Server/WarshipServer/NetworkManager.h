@@ -3,6 +3,7 @@
 #pragma comment(lib, "ws2_32.lib")
 #include <iostream>
 #include <string>
+#include <memory>
 
 #include "CommandManager.h"
 #include "Command.h"

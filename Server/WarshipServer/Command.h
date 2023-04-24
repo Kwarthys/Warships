@@ -5,7 +5,7 @@
 class Command
 {
 	public:
-		enum CommandID { IDAttrib, NameSend, TargetGrid, FireGrid, FireResult, ShipSunk, EndGame };
+		enum CommandID { IDAttrib, RegisterOther, NameSend, TargetGrid, FireGrid, FireResult, ShipSunk, EndGame };
 		CommandID id;
 		int parameter;
 };

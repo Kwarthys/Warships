@@ -32,6 +32,12 @@ void NetworkManager::startServer(CommandManager& cm)
 
         if (csock != INVALID_SOCKET)
         {
+            char recvBuf[255];
+            int rcvLen = recv(csock, recvBuf, 255,0);
+
+            std::unique_ptr<Command> command = cm.deserialize(recvBuf, rcvLen);
+            cm.displayCommand(*command.get());
+
             cout << "Sending command" << endl;
 
             StringCommand sc;

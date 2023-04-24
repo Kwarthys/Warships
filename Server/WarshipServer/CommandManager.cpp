@@ -45,20 +45,19 @@ int CommandManager::serializeStringCommand(StringCommand& c, char* buf)
 }
 
 
-Command* CommandManager::deserialize(const char const * buf, const int len) const
+std::unique_ptr<Command> CommandManager::deserialize(const char const * buf, const int len) const
 {
 	Command::CommandID id = (Command::CommandID)buf[0];
 
-	Command* commandPtr;
+	std::unique_ptr<Command> commandPtr;
 
 	if (id == Command::NameSend)
 	{
 		//Deserialize string
-		StringCommand* c = new StringCommand();
-		commandPtr = c;
+		std::unique_ptr<StringCommand> stringCommandPtr = std::make_unique<StringCommand>();
 
-		c->id = id;
-		c->parameter = buf[1];
+		stringCommandPtr->id = id;
+		stringCommandPtr->parameter = buf[1];
 
 		std::ostringstream stream;
 		
@@ -67,21 +66,24 @@ Command* CommandManager::deserialize(const char const * buf, const int len) cons
 			stream << buf[i];
 		}
 
-		c->data = stream.str();
+		stringCommandPtr->data = stream.str();
+
+		commandPtr = std::move(stringCommandPtr);
 	}
 	else
 	{
 		//Deserialize int array
-		IntArrayCommand* c = new IntArrayCommand();
-		commandPtr = c;
+		std::unique_ptr<IntArrayCommand> intArrayCommandPtr = std::make_unique <IntArrayCommand>();
 
-		c->id = id;
-		c->parameter = buf[1];
+		intArrayCommandPtr->id = id;
+		intArrayCommandPtr->parameter = buf[1];
 
 		for (int i = 2; i < len; i++)
 		{
-			c->data.push_back(buf[i]);
+			intArrayCommandPtr->data.push_back(buf[i]);
 		}
+
+		commandPtr = std::move(intArrayCommandPtr);
 	}
 
 
@@ -106,10 +108,8 @@ void CommandManager::testSerialization()
 
 	std::cout << std::endl;
 
-	Command* cptr = deserialize(buf, len);
+	std::unique_ptr<Command> cptr = deserialize(buf, len);
 	displayCommand(*cptr);
-
-	delete cptr;
 
 	IntArrayCommand ic;
 	ic.id = Command::TargetGrid;
@@ -130,11 +130,9 @@ void CommandManager::testSerialization()
 
 	cptr = deserialize(buf, len);
 	displayCommand(*cptr);
-
-	delete cptr;
 }
 
-void CommandManager::displayCommand(Command& c)
+void CommandManager::displayCommand(const Command& c)
 {
 	if (c.id == Command::NameSend)
 	{
