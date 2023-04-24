@@ -39,6 +39,33 @@ public class Ship
         this.shipName = shipScriptable.shipName;
     }
 
+    public Vector2Int getShipRootOffset()
+    {
+        //TODO not sure of when to apply offset and offset sign
+        int x = 0;
+        int y = 0;
+
+        int evenOffset = (length+1) % 2;//0 if len odd, 1 if len even
+
+        switch(orientation)
+        {
+            case Orientation.NORTH:
+                y = -(length/2);
+                break;
+            case Orientation.SOUTH:
+                y = (length / 2) - evenOffset;
+                break;
+            case Orientation.EAST:
+                x = -(length / 2);
+                break;
+            case Orientation.WEST:
+                x = (length / 2) - evenOffset;
+                break;
+        }
+
+        return new Vector2Int(x, y);
+    }
+
     public RectInt computeShipFootprint(Vector2Int pos)
     {
         int x = pos.x;

@@ -2,14 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CommandInterpreter : MonoBehaviour
+public class CommandInterpreter
 {
-    public void treatCommand(Command c)
+    public void treatIncomingCommand(Command c)
     {
-        if(c.id == CommandManager.CommandID.NameSend)
+        if(c.id == CommandManager.CommandID.GameStarts)
+        {
+            GameManager.instance.gameStarts();
+        }
+        else if(c.id == CommandManager.CommandID.NameSend)
         {
             StringCommand command = (StringCommand)c;
-            GameManager.instance.registerPlayer(command.param, command.data);
+            GameManager.instance.registerPlayerName(command.param, command.data);
         }
         else
         {
@@ -18,7 +22,10 @@ public class CommandInterpreter : MonoBehaviour
             switch(c.id)
             {
                 case CommandManager.CommandID.IDAttrib:
-                    GameManager.instance.registerLocalPlayerID(c.param);
+                    GameManager.instance.registerLocalPlayerID(c.param, command.data[0]);
+                    break;
+                case CommandManager.CommandID.RegisterOther:
+                    GameManager.instance.registerPlayer(c.param, command.data[0]);
                     break;
 
                 case CommandManager.CommandID.EndGame:

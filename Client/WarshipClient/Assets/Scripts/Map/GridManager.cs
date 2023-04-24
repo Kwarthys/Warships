@@ -200,6 +200,15 @@ public class GridManager : MonoBehaviour
         return checkSpaceForShip(map[index].coords, ship, true);
     }
 
+    public int getRootNodeOfShip(Vector3 worldCenterPos, Ship ship)
+    {
+        int index = fromWorldToNode(worldCenterPos);
+        Vector2Int coords = fromIndexToCoords(index);
+        coords -= ship.getShipRootOffset();
+
+        return fromCoordsToIndex(coords);
+    }
+
     private bool checkSpaceForShip(Vector2Int shipCenter, Ship ship, bool placeIfEmpty = false)
     {
         RectInt shipFootprint = ship.computeShipFootprint(shipCenter);
