@@ -15,7 +15,7 @@ class CommandManager
 		int serializeStringCommand(StringCommand& c, char* buf);
 
 		//Command* deserialize(const char const * buf, const int len) const;
-		std::unique_ptr<Command> deserialize(const char const* buf, const int len) const;
+		std::unique_ptr<Command> deserialize(const char* buf, const int len) const;
 
 		void testSerialization();
 

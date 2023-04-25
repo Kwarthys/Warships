@@ -45,7 +45,7 @@ int CommandManager::serializeStringCommand(StringCommand& c, char* buf)
 }
 
 
-std::unique_ptr<Command> CommandManager::deserialize(const char const * buf, const int len) const
+std::unique_ptr<Command> CommandManager::deserialize(const char * buf, const int len) const
 {
 	Command::CommandID id = (Command::CommandID)buf[0];
 
@@ -147,7 +147,7 @@ void CommandManager::displayCommand(const Command& c)
 void CommandManager::displayStringCommand(StringCommand& c)
 {
 	std::ostringstream stream;
-	stream << c.id << " " << c.parameter << " : " << c.data << std::endl;
+	stream << c.id << " " << c.parameter << " s" << c.socketID << " : " << c.data << std::endl;
 
 	std::cout << stream.str();
 }
@@ -155,7 +155,7 @@ void CommandManager::displayStringCommand(StringCommand& c)
 void CommandManager::displayIntArrayCommand(IntArrayCommand& c)
 {
 	std::ostringstream stream;
-	stream << c.id << " " << c.parameter << " : ";
+	stream << c.id << " " << c.parameter << " s" << c.socketID << " : ";
 
 	for (size_t i = 0; i < c.data.size(); i++)
 	{

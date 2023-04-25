@@ -140,7 +140,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
+    <ClCompile Include="ClientConnexion.cpp" />
     <ClCompile Include="Command.cpp" />
+    <ClCompile Include="CommandBuffer.cpp" />
     <ClCompile Include="CommandManager.cpp" />
     <ClCompile Include="Footprint.cpp" />
     <ClCompile Include="MapNode.cpp" />
@@ -151,7 +153,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.h" />
+    <ClInclude Include="ClientConnexion.h" />
     <ClInclude Include="Command.h" />
+    <ClInclude Include="CommandBuffer.h" />
     <ClInclude Include="CommandManager.h" />
     <ClInclude Include="Footprint.h" />
     <ClInclude Include="MapNode.h" />

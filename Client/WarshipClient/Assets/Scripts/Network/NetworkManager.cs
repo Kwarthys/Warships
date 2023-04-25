@@ -20,6 +20,8 @@ public class NetworkManager : MonoBehaviour
 
     private Socket socket;
 
+    private bool networkRunning = false;
+
     public CommandManager commandManager { get; private set; }
     private CommandInterpreter commandInterpreter = new CommandInterpreter();
 
@@ -49,6 +51,8 @@ public class NetworkManager : MonoBehaviour
 
         tcpReader = new Thread(infiniteReadFromServer);
         tcpReader.Start();
+
+        networkRunning = true;
     }
 
     private Socket setupTCPSocket()
@@ -79,9 +83,20 @@ public class NetworkManager : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        socket.Shutdown(SocketShutdown.Both);//we don't even say goodbye :(
-        tcpReader.Interrupt();
+        shutNetwork();
     }
+
+    private void shutNetwork()
+    {
+        if(networkRunning)
+        {
+            tcpReader.Interrupt();
+            socket.Shutdown(SocketShutdown.Both);//we don't even say goodbye :( //this actually sends a very cold and formal goodbye
+
+            networkRunning = false;
+        }
+    }
+
 
     //do not call on main thread
     private void infiniteReadFromServer()
@@ -97,6 +112,12 @@ public class NetworkManager : MonoBehaviour
 #if UNITY_EDITOR
                 if(debugConsoleDisplay)commandManager.displayCommand(c);
 #endif
+            }
+            else
+            {
+                Debug.Log("Server closed connection");
+                shutNetwork();
+                return;
             }
         }
     }

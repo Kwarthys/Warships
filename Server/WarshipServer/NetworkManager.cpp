@@ -2,7 +2,7 @@
 
 void NetworkManager::startServer(CommandManager& cm)
 {
-    cout << "Hello Warship Server World!" << endl;
+    std::cout << "Hello Warship Server World!" << endl;
 
     WSADATA WSAData;
     WSAStartup(MAKEWORD(2, 0), &WSAData);
@@ -22,23 +22,33 @@ void NetworkManager::startServer(CommandManager& cm)
     bool received = false;
 
 
-    SOCKADDR_IN csin;
-    SOCKET csock;
+    std::vector<ClientConnexion> connexions;
+
 
     while (!received)
     {
-        int sinsize = sizeof(csin);
-        csock = accept(s, (SOCKADDR*)&csin, &sinsize);
+        SOCKADDR_IN csin;
+        SOCKET clientSocket;
 
-        if (csock != INVALID_SOCKET)
+        int sinsize = sizeof(csin);
+        clientSocket = accept(s, (SOCKADDR*)&csin, &sinsize);
+
+        if (clientSocket != INVALID_SOCKET)
         {
+            ClientConnexion c(clientSocket);
+            connexions.push_back(c);
+
+            //blocks till client shuts down
+            c.manageClientCommunication(cm); //Start this in a new thread, one per client
+
+            /*
             char recvBuf[255];
-            int rcvLen = recv(csock, recvBuf, 255,0);
+            int rcvLen = recv(clientSocket, recvBuf, 255,0);
 
             std::unique_ptr<Command> command = cm.deserialize(recvBuf, rcvLen);
             cm.displayCommand(*command.get());
 
-            cout << "Sending command" << endl;
+            std::cout << "Sending command" << endl;
 
             StringCommand sc;
             sc.id = Command::NameSend;
@@ -50,18 +60,18 @@ void NetworkManager::startServer(CommandManager& cm)
             int len = cm.serialize(sc, buf);
 
             //send(csock, "HELLO CLIENT\r\n", 14, 0);
-            send(csock, buf, len, 0);
+            send(clientSocket, buf, len, 0);
 
+            */
             received = true;
         }
         else
         {
-            cout << "listening ..." << endl;
+            std::cout << "listening ..." << endl;
         }
     }
 
-    closesocket(csock);
     WSACleanup();
 
-    cout << "Properly closed" << endl;
+    std::cout << "Properly closed" << endl;
 }

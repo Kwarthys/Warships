@@ -4,17 +4,18 @@
 #include <iostream>
 #include <string>
 #include <memory>
-#include <vector>
 
 #include "CommandManager.h"
 #include "Command.h"
-#include "ClientConnexion.h"
 
-using namespace std;
-
-class NetworkManager
+class ClientConnexion
 {
 	public:
-		void startServer(CommandManager& cm);
+		ClientConnexion(SOCKET associatedSocket) : clientSocket(associatedSocket) {}
+
+		void manageClientCommunication(CommandManager& cm);
+
+	private:
+		SOCKET clientSocket;
 };
 
