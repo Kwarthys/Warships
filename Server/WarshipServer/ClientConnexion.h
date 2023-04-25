@@ -4,18 +4,27 @@
 #include <iostream>
 #include <string>
 #include <memory>
+#include <thread>
 
 #include "CommandManager.h"
 #include "Command.h"
+#include "CommandBuffer.h"
 
 class ClientConnexion
 {
 	public:
-		ClientConnexion(SOCKET associatedSocket) : clientSocket(associatedSocket) {}
+		ClientConnexion(SOCKET associatedSocket, CommandBuffer& inwardCommandBuffer) :
+			clientSocket(associatedSocket), inwardCommandBuffer(inwardCommandBuffer) {}
 
-		void manageClientCommunication(CommandManager& cm);
+		void startClientListening();
+
+		void sendToClient(const Command& c) const;
+		std::thread listenerThread;
 
 	private:
 		SOCKET clientSocket;
+		CommandBuffer& inwardCommandBuffer;
+		static void manageClientCommunication(const ClientConnexion& clientConnexion);
+
 };
 

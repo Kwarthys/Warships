@@ -72,12 +72,9 @@ public class CommandManager : MonoBehaviour
             command.id = cid;
             command.param = parameter;
 
-            Debug.Log(cid + " " + parameter + " " + len + " " + (len - 2));
-
             int[] data = new int[len - 2];
             for (int i = 2; i < len; i++)
             {
-                Debug.Log(rawCommand[i]);
                 data[i - 2] = rawCommand[i];
             }
 

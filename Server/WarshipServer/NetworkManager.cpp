@@ -1,6 +1,6 @@
 #include "NetworkManager.h"
 
-void NetworkManager::startServer(CommandManager& cm)
+void NetworkManager::startServer()
 {
     std::cout << "Hello Warship Server World!" << endl;
 
@@ -19,56 +19,44 @@ void NetworkManager::startServer(CommandManager& cm)
 
     listen(s, 0);
 
-    bool received = false;
-
-
     std::vector<ClientConnexion> connexions;
+    std::vector<int> indeciesToSockets;
 
+    CommandBuffer inwardComs;
 
+    bool received = false;
     while (!received)
     {
         SOCKADDR_IN csin;
-        SOCKET clientSocket;
-
         int sinsize = sizeof(csin);
-        clientSocket = accept(s, (SOCKADDR*)&csin, &sinsize);
+        SOCKET clientSocket = accept(s, (SOCKADDR*)&csin, &sinsize);
 
         if (clientSocket != INVALID_SOCKET)
         {
-            ClientConnexion c(clientSocket);
-            connexions.push_back(c);
+            connexions.emplace_back(clientSocket, inwardComs);
+            indeciesToSockets.push_back(clientSocket);
 
-            //blocks till client shuts down
-            c.manageClientCommunication(cm); //Start this in a new thread, one per client
+            connexions.back().startClientListening(); //Start coms in a new thread, will be one per client
 
-            /*
-            char recvBuf[255];
-            int rcvLen = recv(clientSocket, recvBuf, 255,0);
+            IntArrayCommand c;
+            c.id = Command::IDAttrib;
+            c.parameter = indeciesToSockets.back();
+            c.data.push_back(0);
 
-            std::unique_ptr<Command> command = cm.deserialize(recvBuf, rcvLen);
-            cm.displayCommand(*command.get());
+            connexions.back().sendToClient(c);
 
-            std::cout << "Sending command" << endl;
-
-            StringCommand sc;
-            sc.id = Command::NameSend;
-            sc.parameter = 10;
-            sc.data = "ServersZykyflex";
-
-            char buf[255];
-
-            int len = cm.serialize(sc, buf);
-
-            //send(csock, "HELLO CLIENT\r\n", 14, 0);
-            send(clientSocket, buf, len, 0);
-
-            */
             received = true;
         }
         else
         {
             std::cout << "listening ..." << endl;
         }
+    }
+
+    //waiting for all threads to complete before cleaning the network utilities
+    for (size_t i = 0; i < connexions.size(); i++)
+    {
+        connexions[i].listenerThread.join();
     }
 
     WSACleanup();

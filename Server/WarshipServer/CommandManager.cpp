@@ -1,6 +1,6 @@
 #include "CommandManager.h"
 
-int CommandManager::serialize(Command& c, char* buf)
+int CommandManager::serialize(const Command& c, char* buf)
 {
 	if (c.id == Command::NameSend)
 	{
@@ -13,7 +13,7 @@ int CommandManager::serialize(Command& c, char* buf)
 }
 
 
-int CommandManager::serializeIntArrayCommand(IntArrayCommand& c, char* buf)
+int CommandManager::serializeIntArrayCommand(const IntArrayCommand& c, char* buf)
 {
 	int neededLen = 2 + c.data.size();
 	
@@ -29,7 +29,7 @@ int CommandManager::serializeIntArrayCommand(IntArrayCommand& c, char* buf)
 }
 
 
-int CommandManager::serializeStringCommand(StringCommand& c, char* buf)
+int CommandManager::serializeStringCommand(const StringCommand& c, char* buf)
 {
 	int neededLen = 2 + c.data.size();
 
@@ -45,7 +45,7 @@ int CommandManager::serializeStringCommand(StringCommand& c, char* buf)
 }
 
 
-std::unique_ptr<Command> CommandManager::deserialize(const char * buf, const int len) const
+std::unique_ptr<Command> CommandManager::deserialize(const char * buf, const int len)
 {
 	Command::CommandID id = (Command::CommandID)buf[0];
 

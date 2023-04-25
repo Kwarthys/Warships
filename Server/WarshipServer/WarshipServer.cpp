@@ -7,6 +7,7 @@
 #include "Ship.h"
 #include "CommandManager.h"
 #include "NetworkManager.h"
+#include "CommandBuffer.h"
 
 using namespace std;
 
@@ -44,12 +45,17 @@ int main()
     board.debugDisplayMap();
     */
 
-    /**** NETWORK & SERIALIZATION TESTING *****/
+    /**** NETWORK TESTING *****/
+
     NetworkManager networkManager;
-    CommandManager commandManager;
+    networkManager.startServer();
 
-    networkManager.startServer(commandManager);
 
+    /**** THREADING TESTING ****/
+    /*
+    CommandBuffer buffer;
+    buffer.testThreading();
+    */
 
     return 0;
 }

@@ -1,38 +1,47 @@
 #include "ClientConnexion.h"
 
 //blocks till client shuts down connection
-void ClientConnexion::manageClientCommunication(CommandManager& cm)
+void ClientConnexion::manageClientCommunication(const ClientConnexion& clientConnexion)
 {
     while (true)
     {
         char recvBuf[255];
-        int rcvLen = recv(clientSocket, recvBuf, 255, 0);
+        std::cout << "ready to listen to " << clientConnexion.clientSocket << std::endl;
+        int rcvLen = recv(clientConnexion.clientSocket, recvBuf, 255, 0);
+
+        std::cout << "Received " << rcvLen << std::endl;
 
         if (rcvLen != 0)
         {
-            std::unique_ptr<Command> command = cm.deserialize(recvBuf, rcvLen);
-            command.get()->socketID = clientSocket;
-            cm.displayCommand(*command.get());
-
-            std::cout << "Sending command" << std::endl;
-
-            StringCommand sc;
-            sc.id = Command::NameSend;
-            sc.parameter = clientSocket;
-            sc.data = "ServersZykyflex";
-
-            char buf[255];
-
-            int len = cm.serialize(sc, buf);
-
-            //send(csock, "HELLO CLIENT\r\n", 14, 0);
-            send(clientSocket, buf, len, 0);
+            std::unique_ptr<Command> command = CommandManager::deserialize(recvBuf, rcvLen);
+            command->socketID = clientConnexion.clientSocket;
+            std::cout << "Placing command in buffer. Command:";
+            CommandManager::displayCommand(*command);
+            clientConnexion.inwardCommandBuffer.waitToAdd(std::move(command));
         }
         else
         {
-            std::cout << "Client" << clientSocket << " terminated connexion" << std::endl;
-            closesocket(clientSocket);
+            std::cout << "Client" << clientConnexion.clientSocket << " terminated connexion" << std::endl;
+            closesocket(clientConnexion.clientSocket);
             return;
         }
     }
+}
+
+void ClientConnexion::sendToClient(const Command& c) const
+{
+    std::cout << "sending Command: ";
+    CommandManager::displayCommand(c);
+    std::cout << std::endl;
+
+    char buf[255];
+    int len = CommandManager::serialize(c, buf);
+
+    send(clientSocket, buf, len, 0);
+}
+
+void ClientConnexion::startClientListening()
+{
+    //std::thread listener(manageClientCommunication, *this);
+    listenerThread = std::thread(manageClientCommunication, std::ref(*this));
 }

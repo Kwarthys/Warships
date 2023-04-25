@@ -10,19 +10,19 @@
 class CommandManager
 {
 	public:
-		int serialize(Command& c, char* buf);
-		int serializeIntArrayCommand(IntArrayCommand& c, char* buf);
-		int serializeStringCommand(StringCommand& c, char* buf);
+		static int serialize(const Command& c, char* buf);
+		static int serializeIntArrayCommand(const IntArrayCommand& c, char* buf);
+		static int serializeStringCommand(const StringCommand& c, char* buf);
 
 		//Command* deserialize(const char const * buf, const int len) const;
-		std::unique_ptr<Command> deserialize(const char* buf, const int len) const;
+		static std::unique_ptr<Command> deserialize(const char* buf, const int len);
 
-		void testSerialization();
+		static void testSerialization();
 
-		void displayCommand(const Command& c);
+		static void displayCommand(const Command& c);
 
 	private:
-		void displayStringCommand(StringCommand& c);
-		void displayIntArrayCommand(IntArrayCommand& c);
+		static void displayStringCommand(StringCommand& c);
+		static void displayIntArrayCommand(IntArrayCommand& c);
 };
 

@@ -15,6 +15,6 @@ using namespace std;
 class NetworkManager
 {
 	public:
-		void startServer(CommandManager& cm);
+		void startServer();
 };
 

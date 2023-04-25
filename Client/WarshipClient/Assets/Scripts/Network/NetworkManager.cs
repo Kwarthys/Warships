@@ -90,10 +90,9 @@ public class NetworkManager : MonoBehaviour
     {
         if(networkRunning)
         {
+            networkRunning = false;
             tcpReader.Interrupt();
             socket.Shutdown(SocketShutdown.Both);//we don't even say goodbye :( //this actually sends a very cold and formal goodbye
-
-            networkRunning = false;
         }
     }
 
@@ -115,7 +114,7 @@ public class NetworkManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("Server closed connection");
+                if(networkRunning) Debug.Log("Server closed connection");
                 shutNetwork();
                 return;
             }
