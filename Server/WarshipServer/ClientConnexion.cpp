@@ -1,7 +1,7 @@
 #include "ClientConnexion.h"
 
 //blocks till client shuts down connection
-void ClientConnexion::manageClientCommunication(const ClientConnexion& clientConnexion)
+void ClientConnexion::manageClientCommunication(ClientConnexion& clientConnexion)
 {
     while (true)
     {
@@ -17,12 +17,13 @@ void ClientConnexion::manageClientCommunication(const ClientConnexion& clientCon
             command->socketID = clientConnexion.clientSocket;
             std::cout << "Placing command in buffer. Command:";
             CommandManager::displayCommand(*command);
-            clientConnexion.inwardCommandBuffer.waitToAdd(std::move(command));
+            clientConnexion.inwardCommandBuffer->waitToAdd(std::move(command));
         }
         else
         {
             std::cout << "Client" << clientConnexion.clientSocket << " terminated connexion" << std::endl;
             closesocket(clientConnexion.clientSocket);
+            clientConnexion.running = false;
             return;
         }
     }
@@ -42,6 +43,5 @@ void ClientConnexion::sendToClient(const Command& c) const
 
 void ClientConnexion::startClientListening()
 {
-    //std::thread listener(manageClientCommunication, *this);
     listenerThread = std::thread(manageClientCommunication, std::ref(*this));
 }

@@ -5,6 +5,8 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <atomic>
+#include <thread>
 
 #include "CommandManager.h"
 #include "Command.h"
@@ -16,5 +18,14 @@ class NetworkManager
 {
 	public:
 		void startServer();
+
+	private:
+		static void welcomeClients(NetworkManager& networkManager, SOCKET serverSocket);
+
+		std::vector<ClientConnexion> connexions;
+		std::vector<int> indeciesToSockets;
+		CommandBuffer inwardComs;
+
+		std::atomic<bool> acceptMoreConnexions = true;
 };
 

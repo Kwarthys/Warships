@@ -25,7 +25,6 @@ bool CommandBuffer::tryToGet(std::unique_ptr<Command> commandPtr)
 		locked = false;
 		return true;
 	}
-
 }
 
 void CommandBuffer::testThreading()
