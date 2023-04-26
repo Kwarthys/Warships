@@ -20,7 +20,7 @@ class NetworkManager
 		void startServer();
 
 	private:
-		static void welcomeClients(NetworkManager& networkManager, SOCKET serverSocket);
+		static void welcomeClients(NetworkManager* networkManager, SOCKET serverSocket);
 
 		std::vector<ClientConnexion> connexions;
 		std::vector<int> indeciesToSockets;

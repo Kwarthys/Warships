@@ -52,10 +52,8 @@ int main()
 
 
     /**** THREADING TESTING ****/
-    /*
-    CommandBuffer buffer;
-    buffer.testThreading();
-    */
+    //CommandBuffer buffer;
+    //buffer.testThreading();
 
     return 0;
 }

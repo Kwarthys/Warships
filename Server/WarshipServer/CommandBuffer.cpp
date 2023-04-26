@@ -3,28 +3,36 @@
 //do not call from main thread
 void CommandBuffer::waitToAdd(std::unique_ptr<Command> commandPtr)
 {
-	while (locked);
-
-	locked = true;
-	commands.push_back(std::move(commandPtr));
-	locked = false;
+	std::unique_lock<std::mutex> theLock(mutex);//wait mutex to get free
+	commands.emplace(std::move(commandPtr));
+	theLock.unlock();
 }
 
-
-bool CommandBuffer::tryToGet(std::unique_ptr<Command> commandPtr)
+std::unique_ptr<Command> CommandBuffer::tryToGet()
 {
-	if (locked)
+
+	std::unique_lock<std::mutex> theLock(mutex, std::defer_lock);
+
+	if (theLock.try_lock())
 	{
-		return false;
+		if (commands.size() == 0)
+		{
+			return nullptr;
+		}
+		else
+		{
+			std::unique_ptr<Command> commandPtr = std::move(commands.front());
+			commands.pop();
+			theLock.unlock();
+
+			return commandPtr;
+		}
 	}
 	else
 	{
-		locked = true;
-		commandPtr = std::move(commands.front());
-		commands.erase(commands.cbegin());
-		locked = false;
-		return true;
+		return nullptr;
 	}
+
 }
 
 void CommandBuffer::testThreading()
@@ -33,41 +41,50 @@ void CommandBuffer::testThreading()
 	c1->id = Command::NameSend;
 	c1->parameter = 1;
 	c1->data = "Command1";
+	c1->socketID = 265;
 
 	std::unique_ptr<StringCommand> c2 = std::make_unique<StringCommand>();
 	c2->id = Command::NameSend;
 	c2->parameter = 2;
 	c2->data = "Command2";
+	c2->socketID = 243;
 
 	std::unique_ptr<StringCommand> c3 = std::make_unique<StringCommand>();
 	c3->id = Command::NameSend;
 	c3->parameter = 3;
 	c3->data = "Command3";
+	c3->socketID = 272;
 
 	CommandBuffer buffer;
-	buffer.DEBUG_SETLOCK(true);
-
+	buffer.mutex.lock();
 	std::thread t1(testThreadingTask, std::move(c1), std::ref(buffer));
 	std::thread t2(testThreadingTask, std::move(c2), std::ref(buffer));
 	std::thread t3(testThreadingTask, std::move(c3), std::ref(buffer));
 
 	std::cout << "go" << std::endl;
-	buffer.DEBUG_SETLOCK(false);
+	buffer.mutex.unlock();
 
 	t1.join();
 	t2.join();
 	t3.join();
 
-	for (size_t i = 0; i < buffer.commands.size(); i++)
+	std::cout << std::endl;
+
+	while (buffer.commands.size() > 0)
 	{
-		std::cout << buffer.commands[i]->parameter << std::endl;
+		std::unique_ptr<Command> c = buffer.tryToGet();
+		if (c != nullptr)
+		{
+			CommandManager::displayCommand(*c);
+		}
 	}
+	
 }
 
 void CommandBuffer::testThreadingTask(std::unique_ptr<Command> toAdd, CommandBuffer& commandBuffer)
 {
 	int p = toAdd->parameter;
-	std::cout << "Trying to add " << p << std::endl;
+	std::cout << "adding " << p << std::endl;
 	commandBuffer.waitToAdd(std::move(toAdd));
 	std::cout << "Added " << p << std::endl;
 }

@@ -147,7 +147,7 @@ void CommandManager::displayCommand(const Command& c)
 void CommandManager::displayStringCommand(StringCommand& c)
 {
 	std::ostringstream stream;
-	stream << c.id << " " << c.parameter << " s" << c.socketID << " : " << c.data << std::endl;
+	stream << "(" << c.socketID << ") " << c.id << " " << c.parameter << " : " << c.data << std::endl;
 
 	std::cout << stream.str();
 }
@@ -155,7 +155,7 @@ void CommandManager::displayStringCommand(StringCommand& c)
 void CommandManager::displayIntArrayCommand(IntArrayCommand& c)
 {
 	std::ostringstream stream;
-	stream << c.id << " " << c.parameter << " s" << c.socketID << " : ";
+	stream << "(" << c.socketID << ") " << c.id << " " << c.parameter << " : ";
 
 	for (size_t i = 0; i < c.data.size(); i++)
 	{

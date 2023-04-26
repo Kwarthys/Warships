@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CommandSender
 {
-    private void sendCommand(Command command)
+    public void sendCommand(Command command)
     {
         byte[] byteBuffer = new byte[255];
         int len = NetworkManager.instance.commandManager.serializeCommand(command, byteBuffer);

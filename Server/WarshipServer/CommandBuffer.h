@@ -1,25 +1,27 @@
 #pragma once
 
 #include <iostream>
-#include <vector>
+#include <queue>
 #include <memory>
 #include <thread>
 #include <atomic>
+#include <mutex>
 
 #include "Command.h"
+#include "CommandManager.h"
 
 class CommandBuffer
 {
 	public:
 		void waitToAdd(std::unique_ptr<Command> commandPtr);
-		bool tryToGet(std::unique_ptr<Command> commandPtr);
+		std::unique_ptr<Command> tryToGet();
 
 		static void testThreading();
 		static void testThreadingTask(std::unique_ptr<Command> toAdd, CommandBuffer& commandBuffer);
 
 	private:
-		void DEBUG_SETLOCK(bool lockStatus) { locked = lockStatus; }
-		std::vector<std::unique_ptr<Command>> commands;
-		volatile std::atomic<bool> locked = false;
+		std::queue<std::unique_ptr<Command>> commands;
+		//std::atomic<bool> locked = false;
+		std::mutex mutex;
 };
 

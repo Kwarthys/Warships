@@ -22,27 +22,30 @@ void NetworkManager::startServer()
     SOCKADDR_IN csin;
     int sinsize = sizeof(csin);
 
-    std::thread welcomingThread(welcomeClients, std::ref(*this), s);
+    std::thread welcomingThread(welcomeClients, this, s);
 
-    bool gameOn = true;
+    int receivedCommands = 0;
 
-    while (gameOn)
+    while (receivedCommands < 5)
     {
+        /*
         if (acceptMoreConnexions)
         {
-            if (connexions.size() >= 2)
+            if (connexions.size() >= 3)
             {
-                acceptMoreConnexions = false;
-                shutdown(s, SD_BOTH);
                 std::cout << "Stopping further connexions" << endl;
+                acceptMoreConnexions = false;
+                //shutdown(s, SD_BOTH);
             }
         }
-
-        std::unique_ptr<Command> c;
-        //if (inwardComs.tryToGet(c))
-        //{
-        //  welp i need some time to think this through
-        //}
+        */
+       
+        std::unique_ptr<Command> c = inwardComs.tryToGet();
+        if (c != nullptr)
+        {
+            CommandManager::displayCommand(*c);
+            receivedCommands++;
+        }
     }
 
     
@@ -58,28 +61,32 @@ void NetworkManager::startServer()
     std::cout << "Properly closed" << endl;
 }
 
-void NetworkManager::welcomeClients(NetworkManager& networkManager, SOCKET serverSocket)
+void NetworkManager::welcomeClients(NetworkManager* networkManager, SOCKET serverSocket)
 {
     SOCKADDR_IN csin;
     int sinsize = sizeof(csin);
 
-    while (networkManager.acceptMoreConnexions)
+    while (networkManager->acceptMoreConnexions)
     {
         SOCKET clientSocket = accept(serverSocket, (SOCKADDR*)&csin, &sinsize);
 
+        std::cout << "Accepted " << clientSocket << endl;
+
         if (clientSocket != INVALID_SOCKET)
         {
-            networkManager.connexions.emplace_back(clientSocket, &networkManager.inwardComs);
-            networkManager.indeciesToSockets.push_back(clientSocket);
+            networkManager->connexions.emplace_back(clientSocket, &networkManager->inwardComs);//TODO Debug "abort() has been called" on second connexion
+            networkManager->indeciesToSockets.emplace_back(clientSocket);
 
-            networkManager.connexions.back().startClientListening(); //Start coms in a new thread, will be one per client
+            std::cout << "added connexion to "  << clientSocket << endl;
+
+            networkManager->connexions.back().startClientListening(); //Start coms in a new thread, will be one per client
 
             IntArrayCommand c;
             c.id = Command::IDAttrib;
-            c.parameter = networkManager.indeciesToSockets.back();
+            c.parameter = networkManager->indeciesToSockets.back();
             c.data.push_back(0);
 
-            networkManager.connexions.back().sendToClient(c);
+            networkManager->connexions.back().sendToClient(c);
         }
     }
 }
