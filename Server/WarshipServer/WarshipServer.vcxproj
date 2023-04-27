@@ -143,8 +143,10 @@
     <ClCompile Include="ClientConnexion.cpp" />
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="CommandBuffer.cpp" />
+    <ClCompile Include="CommandInterpreter.cpp" />
     <ClCompile Include="CommandManager.cpp" />
     <ClCompile Include="Footprint.cpp" />
+    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="MapNode.cpp" />
     <ClCompile Include="NetworkManager.cpp" />
     <ClCompile Include="Ship.cpp" />
@@ -156,8 +158,10 @@
     <ClInclude Include="ClientConnexion.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="CommandBuffer.h" />
+    <ClInclude Include="CommandInterpreter.h" />
     <ClInclude Include="CommandManager.h" />
     <ClInclude Include="Footprint.h" />
+    <ClInclude Include="GameManager.h" />
     <ClInclude Include="MapNode.h" />
     <ClInclude Include="NetworkManager.h" />
     <ClInclude Include="Ship.h" />

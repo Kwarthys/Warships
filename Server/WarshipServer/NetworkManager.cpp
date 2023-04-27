@@ -22,27 +22,28 @@ void NetworkManager::startServer()
     SOCKADDR_IN csin;
     int sinsize = sizeof(csin);
 
+    connexions.reserve(12); //ClientConnexion are not movable (i don't know how to make them), so we reserve and prevent needing to move them
+
     std::thread welcomingThread(welcomeClients, this, s);
 
     int receivedCommands = 0;
 
     while (receivedCommands < 5)
     {
-        /*
         if (acceptMoreConnexions)
         {
-            if (connexions.size() >= 3)
+            if (connexions.size() >= 2)
             {
                 std::cout << "Stopping further connexions" << endl;
                 acceptMoreConnexions = false;
-                //shutdown(s, SD_BOTH);
+                shutdown(s, SD_BOTH);
             }
         }
-        */
        
         std::unique_ptr<Command> c = inwardComs.tryToGet();
         if (c != nullptr)
         {
+            //TODO send command to GAME MANAGER
             CommandManager::displayCommand(*c);
             receivedCommands++;
         }
@@ -74,8 +75,8 @@ void NetworkManager::welcomeClients(NetworkManager* networkManager, SOCKET serve
 
         if (clientSocket != INVALID_SOCKET)
         {
-            networkManager->connexions.emplace_back(clientSocket, &networkManager->inwardComs);//TODO Debug "abort() has been called" on second connexion
-            networkManager->indeciesToSockets.emplace_back(clientSocket);
+            networkManager->connexions.emplace_back(clientSocket, &(networkManager->inwardComs));//TODO Debug "abort() has been called" on second connexion
+            networkManager->indeciesToSockets.push_back(clientSocket);
 
             std::cout << "added connexion to "  << clientSocket << endl;
 
@@ -89,4 +90,6 @@ void NetworkManager::welcomeClients(NetworkManager* networkManager, SOCKET serve
             networkManager->connexions.back().sendToClient(c);
         }
     }
+
+    cout << "Welcomer Thread closed" << endl;
 }

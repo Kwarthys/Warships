@@ -58,7 +58,9 @@ public class GameManager : MonoBehaviour
     public Player registerPlayer(int index, int playerPlacement)
     {
         GameObject playerObject = new GameObject("Player" + index + "Object");
-        playerObject.transform.SetParent(transform);//keeping editor hierarchy clear, should not do that on build
+#if UNITY_EDITOR
+        playerObject.transform.SetParent(transform);//keeping editor hierarchy clear, only in the editor
+#endif
         Player player = playerObject.AddComponent<Player>();
         player.initPlayer(index, playerPlacements[playerPlacement].position);
 
@@ -71,6 +73,9 @@ public class GameManager : MonoBehaviour
     public void registerLocalPlayerID(int id, int playerPlacement)
     {
         localPlayer = registerPlayer(id, playerPlacement);
+        DebugTextManager.instance.sendTextToDebug("LocalPlayerID: " + id);
+
+        ScoreDisplayManager.instance.registerNewPlayer(id, localPlayerName, 5, true);
     }
 
     public void registerPlayerName(int playerID, string playerName)
@@ -78,6 +83,7 @@ public class GameManager : MonoBehaviour
         if(playerID != localPlayer.playerID)
         {
             getPlayerByID(playerID).setPlayerName(playerName);
+            ScoreDisplayManager.instance.registerNewPlayer(playerID, playerName, 5);
         }
     }
 
