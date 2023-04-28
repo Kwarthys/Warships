@@ -1,7 +1,8 @@
 #include "Board.h"
 
-Board::Board(int sizeX, int sizeY)
+Board::Board(int sizeX, int sizeY, int playerID)
 {
+	this->playerID = playerID;
 	this->sizeX = sizeX;
 	this->sizeY = sizeY;
 	int totalSize = sizeX * sizeY;
@@ -31,14 +32,20 @@ bool Board::shoot(Vector2 target)
 	return shipHit;
 }
 
-bool Board::placeShip(Ship& ship)
+bool Board::placeNewShip(Ship::ShipType shipType, Ship::Orientation facing, int rootNode)
+{
+	Ship toplace(fromIndexToCoord(rootNode), Ship::typeToLength(shipType), facing);
+	return placeShip(toplace);
+}
+
+bool Board::placeShip(Ship ship)
 {
 	int targetedIndex = fromCoordToIndex(ship.pos);
 
 	if (isSpotFree(ship.footprint))
 	{
 		ship.index = ships.size();
-		ships.push_back(ship);
+		ships.emplace_back(ship);
 		assignShipToMap(ship);
 	}
 

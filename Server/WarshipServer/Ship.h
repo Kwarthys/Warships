@@ -10,11 +10,14 @@ class Ship
 {
 	public:
 		enum Orientation {UP, DOWN, LEFT, RIGHT};
+		enum ShipType { None, Destroyer, Submarine, Cruiser, Battleship, Carrier};
 
 		Ship(Vector2 pos, int length, Orientation orientation = Orientation::UP);
 
 		bool takeHit(Vector2 hit);
 		bool isSunk();
+
+		static int typeToLength(ShipType type);
 
 
 		Orientation facing;

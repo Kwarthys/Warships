@@ -8,6 +8,7 @@
 #include "CommandManager.h"
 #include "NetworkManager.h"
 #include "CommandBuffer.h"
+#include "GameManager.h"
 
 using namespace std;
 
@@ -47,7 +48,11 @@ int main()
 
     /**** NETWORK TESTING *****/
 
+    GameManager gameManager;
     NetworkManager networkManager;
+    //gameManager.networkManager = &networkManager;
+    //networkManager.gameManager = &gameManager;      //we can start now that everyone has been introduced
+
     networkManager.startServer();
 
 

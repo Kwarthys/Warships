@@ -45,6 +45,7 @@ void NetworkManager::startServer()
         {
             //TODO send command to GAME MANAGER
             CommandManager::displayCommand(*c);
+            //gameManager->treatCommand(c.get());
             receivedCommands++;
         }
     }
@@ -92,4 +93,27 @@ void NetworkManager::welcomeClients(NetworkManager* networkManager, SOCKET serve
     }
 
     cout << "Welcomer Thread closed" << endl;
+}
+
+void NetworkManager::sendCommandToEveryoneExcept(int exceptID, Command& c)
+{
+    for (size_t i = 0; i < connexions.size(); i++)
+    {
+        if (indeciesToSockets.at(i) != exceptID)
+        {
+            connexions.at(i).sendToClient(c);
+        }
+    }
+}
+
+void NetworkManager::sendCommandToPlayerID(int playerID, Command& c)
+{
+    for (size_t i = 0; i < connexions.size(); i++)
+    {
+        if (indeciesToSockets.at(i) == playerID)
+        {
+            connexions.at(i).sendToClient(c);
+            return;
+        }
+    }
 }

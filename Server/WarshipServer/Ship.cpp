@@ -100,3 +100,22 @@ bool Ship::isSunk()
 	}
 	return sunk;
 }
+
+int Ship::typeToLength(ShipType type)
+{
+	switch (type)
+	{
+		case Destroyer:
+			return 2;
+		case Submarine:
+		case Cruiser:
+			return 3;
+		case Battleship:
+			return 4;
+		case Carrier:
+			return 5;
+		case None:
+		default:
+			return -1;
+	}
+}
