@@ -105,16 +105,16 @@ int Ship::typeToLength(ShipType type)
 {
 	switch (type)
 	{
-		case Destroyer:
+		case ShipType::Destroyer:
 			return 2;
-		case Submarine:
-		case Cruiser:
+		case ShipType::Submarine:
+		case ShipType::Cruiser:
 			return 3;
-		case Battleship:
+		case ShipType::Battleship:
 			return 4;
-		case Carrier:
+		case ShipType::Carrier:
 			return 5;
-		case None:
+		case ShipType::None:
 		default:
 			return -1;
 	}

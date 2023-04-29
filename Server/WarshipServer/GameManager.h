@@ -5,15 +5,17 @@
 
 #include "Command.h"
 #include "CommandManager.h"
-#include "CommandInterpreter.h"
 #include "Board.h"
 #include "Ship.h"
-#include "NetworkManager.h"
+#include "Vector2.h"
+#include "CommandInterpreter.h"
+
+class NetworkManager;
 
 class GameManager
 {
 	public:
-		//GameManager() { commandInterpreter.setGM(this); }
+		GameManager() : networkManager(nullptr)	{ commandInterpreter.setGM(this); }
 
 		void treatCommand(const Command* command);
 
@@ -21,12 +23,12 @@ class GameManager
 		void setPlayerName(int playerID, std::string playerName);
 		bool placePlayerShip(int playerID, Ship::ShipType shipType, Ship::Orientation facing, int rootNode);
 
-		//NetworkManager* networkManager;
+		NetworkManager* networkManager;
 
 	private:
 		int getBoardIndexOfPlayer(int playerID);
 
-		//CommandInterpreter commandInterpreter;
+		CommandInterpreter commandInterpreter;
 
 		std::vector<int> boardIndexToPlayerID;
 		std::vector<Board> playerBoards;

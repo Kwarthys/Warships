@@ -16,7 +16,7 @@ void ClientConnexion::manageClientCommunication(ClientConnexion& clientConnexion
             std::unique_ptr<Command> command = CommandManager::deserialize(recvBuf, rcvLen);
             command->socketID = clientConnexion.clientSocket;
             std::cout << "Placing command in buffer. Command:";
-            CommandManager::displayCommand(*command);
+            CommandManager::displayCommand(command.get());
             clientConnexion.inwardCommandBuffer->waitToAdd(std::move(command));
         }
         else
@@ -32,7 +32,7 @@ void ClientConnexion::manageClientCommunication(ClientConnexion& clientConnexion
 void ClientConnexion::sendToClient(const Command& c) const
 {
     std::cout << "sending Command: ";
-    CommandManager::displayCommand(c);
+    CommandManager::displayCommand(&c);
     std::cout << std::endl;
 
     char buf[255];

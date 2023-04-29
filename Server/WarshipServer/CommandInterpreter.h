@@ -1,8 +1,7 @@
 #pragma once
 
-#include "GameManager.h"
-#include "Command.h"
 #include "CommandManager.h"
+#include "Command.h"
 
 class GameManager;
 

@@ -109,7 +109,7 @@ void CommandManager::testSerialization()
 	std::cout << std::endl;
 
 	std::unique_ptr<Command> cptr = deserialize(buf, len);
-	displayCommand(*cptr);
+	displayCommand(cptr.get());
 
 	IntArrayCommand ic;
 	ic.id = Command::TargetGrid;
@@ -129,37 +129,37 @@ void CommandManager::testSerialization()
 	std::cout << std::endl;
 
 	cptr = deserialize(buf, len);
-	displayCommand(*cptr);
+	displayCommand(cptr.get());
 }
 
-void CommandManager::displayCommand(const Command& c)
+void CommandManager::displayCommand(const Command* c)
 {
-	if (c.id == Command::NameSend)
+	if (c->id == Command::NameSend)
 	{
-		displayStringCommand((StringCommand&)c);
+		displayStringCommand((StringCommand*)c);
 	}
 	else
 	{
-		displayIntArrayCommand((IntArrayCommand&)c);
+		displayIntArrayCommand((IntArrayCommand*)c);
 	}
 }
 
-void CommandManager::displayStringCommand(StringCommand& c)
+void CommandManager::displayStringCommand(const StringCommand* c)
 {
 	std::ostringstream stream;
-	stream << "(" << c.socketID << ") " << c.id << " " << c.parameter << " : " << c.data << std::endl;
+	stream << "(" << c->socketID << ") " << c->id << " " << c->parameter << " : " << c->data << std::endl;
 
 	std::cout << stream.str();
 }
 
-void CommandManager::displayIntArrayCommand(IntArrayCommand& c)
+void CommandManager::displayIntArrayCommand(const IntArrayCommand* c)
 {
 	std::ostringstream stream;
-	stream << "(" << c.socketID << ") " << c.id << " " << c.parameter << " : ";
+	stream << "(" << c->socketID << ") " << c->id << " " << c->parameter << " : ";
 
-	for (size_t i = 0; i < c.data.size(); i++)
+	for (size_t i = 0; i < c->data.size(); i++)
 	{
-		stream << c.data.at(i) << " ";
+		stream << c->data.at(i) << " ";
 	}
 
 	std::cout << stream.str() << std::endl;

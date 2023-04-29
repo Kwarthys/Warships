@@ -8,10 +8,10 @@
 #include <atomic>
 #include <thread>
 
-#include "CommandManager.h"
 #include "Command.h"
 #include "ClientConnexion.h"
-#include "GameManager.h"
+
+class GameManager;
 
 using namespace std;
 
@@ -23,7 +23,7 @@ class NetworkManager
 		void sendCommandToEveryoneExcept(int exceptID, Command& c);
 		void sendCommandToPlayerID(int playerID, Command& c);
 
-		//GameManager* gameManager;
+		GameManager* gameManager;
 
 	private:
 		static void welcomeClients(NetworkManager* networkManager, SOCKET serverSocket);

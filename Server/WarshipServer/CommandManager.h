@@ -19,10 +19,10 @@ class CommandManager
 
 		static void testSerialization();
 
-		static void displayCommand(const Command& c);
+		static void displayCommand(const Command* c);
 
 	private:
-		static void displayStringCommand(StringCommand& c);
-		static void displayIntArrayCommand(IntArrayCommand& c);
+		static void displayStringCommand(const StringCommand* c);
+		static void displayIntArrayCommand(const IntArrayCommand* c);
 };
 

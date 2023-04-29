@@ -1,4 +1,5 @@
 #include "CommandInterpreter.h"
+#include "GameManager.h"
 
 void CommandInterpreter::treatCommand(const Command* command)
 {
@@ -13,14 +14,23 @@ void CommandInterpreter::treatCommand(const Command* command)
 	else if (command->id == Command::NameSend)
 	{
 		StringCommand* c = (StringCommand*)command;
+		gameManager->setupNewPlayer(c->socketID);
+		gameManager->setPlayerName(c->socketID, c->data);
 	}
 	else
 	{
 		IntArrayCommand* c = (IntArrayCommand*)command;
 
-		if (command->id == Command::PlaceShip)
+		switch (command->id)
 		{
-			gameManager->placePlayerShip(c->socketID, (Ship::ShipType)c->parameter, (Ship::Orientation)c->data[0], c->data[1]);
+			case Command::PlaceShip:
+				gameManager->placePlayerShip(c->socketID, (Ship::ShipType)c->parameter, (Ship::Orientation)c->data[0], c->data[1]);
+				break;
+			case Command::TargetGrid:
+				break;
+			case Command::FireGrid:
+				break;
+
 		}
 	}
 

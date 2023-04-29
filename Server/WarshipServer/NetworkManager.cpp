@@ -1,4 +1,5 @@
 #include "NetworkManager.h"
+#include "GameManager.h"
 
 void NetworkManager::startServer()
 {
@@ -43,9 +44,7 @@ void NetworkManager::startServer()
         std::unique_ptr<Command> c = inwardComs.tryToGet();
         if (c != nullptr)
         {
-            //TODO send command to GAME MANAGER
-            CommandManager::displayCommand(*c);
-            //gameManager->treatCommand(c.get());
+            gameManager->treatCommand(c.get());
             receivedCommands++;
         }
     }

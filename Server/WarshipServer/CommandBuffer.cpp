@@ -75,7 +75,7 @@ void CommandBuffer::testThreading()
 		std::unique_ptr<Command> c = buffer.tryToGet();
 		if (c != nullptr)
 		{
-			CommandManager::displayCommand(*c);
+			CommandManager::displayCommand(c.get());
 		}
 	}
 	

@@ -10,7 +10,7 @@ class Ship
 {
 	public:
 		enum Orientation {UP, DOWN, LEFT, RIGHT};
-		enum ShipType { None, Destroyer, Submarine, Cruiser, Battleship, Carrier};
+		enum class ShipType { None, Destroyer, Submarine, Cruiser, Battleship, Carrier};
 
 		Ship(Vector2 pos, int length, Orientation orientation = Orientation::UP);
 

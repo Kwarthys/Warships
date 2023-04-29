@@ -27,6 +27,7 @@ public class GameManager : MonoBehaviour
     private int ghostLength;
     private bool donePlacing = false; //set true to bypass placement (usefull for debug)
     private bool otherDonePlacing = false;
+    private bool nameSelection = true;
 
     [SerializeField]
     private GameObject flarePrefab;
@@ -103,6 +104,7 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         if (localPlayer == null) return;
+        if (nameSelection) return;
 
         if (!donePlacing)
         {
