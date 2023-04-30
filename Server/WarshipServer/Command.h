@@ -8,7 +8,7 @@ class Command
 		enum CommandID { IDAttrib, RegisterOther, NameSend, TargetGrid, FireGrid, FireResult, ShipSunk, EndGame, PlaceShip, GameStarts };
 		CommandID id;
 		int parameter;
-		int socketID;
+		int socketID = -1;
 };
 
 class StringCommand : public Command

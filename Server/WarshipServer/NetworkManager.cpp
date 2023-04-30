@@ -41,12 +41,23 @@ void NetworkManager::startServer()
             }
         }
        
-        std::unique_ptr<Command> c = inwardComs.tryToGet();
-        if (c != nullptr)
+        //taking the most of what we can pull from the buffer, then sleeping 1s before trying again
+        bool readCommands = true;
+        while (readCommands)
         {
-            gameManager->treatCommand(c.get());
-            receivedCommands++;
+            std::unique_ptr<Command> c = inwardComs.tryToGet();//async coms from clients waiting here
+            if (c != nullptr)
+            {
+                gameManager->treatCommand(c.get());//sync coms to clients will be sent here
+                receivedCommands++;
+            }
+            else
+            {
+                readCommands = false;
+            }
         }
+        //sleep 1s
+        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 
     

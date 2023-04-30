@@ -33,14 +33,13 @@ public class NetworkManager : MonoBehaviour
     {
         commandManager = GetComponent<CommandManager>();
         //test();
-
-        startTCP();
     }
 
     private void Update()
     {
         if(commandBuffer.tryToGet(out Command c))
         {
+            Debug.Log("Sending command to interpreter");
             commandInterpreter.treatIncomingCommand(c);
         }
     }
@@ -73,7 +72,7 @@ public class NetworkManager : MonoBehaviour
         byte[] rawData = new byte[1024];
         int len = socket.Receive(rawData);
         Command c = commandManager.deserializeCommand(rawData, len);
-        commandManager.displayCommand(c);
+        Debug.Log(CommandManager.displayCommand(c));
     }
 
     public void send(byte[] buf, int len)
@@ -109,7 +108,7 @@ public class NetworkManager : MonoBehaviour
                 Command c = commandManager.deserializeCommand(rawData, len);
                 commandBuffer.waitToAdd(c);
 #if UNITY_EDITOR
-                if(debugConsoleDisplay)commandManager.displayCommand(c);
+                if(debugConsoleDisplay)Debug.Log(CommandManager.displayCommand(c));
 #endif
             }
             else

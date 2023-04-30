@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -28,6 +29,11 @@ public class GameManager : MonoBehaviour
     private bool donePlacing = false; //set true to bypass placement (usefull for debug)
     private bool otherDonePlacing = false;
     private bool nameSelection = true;
+
+    [SerializeField]
+    private GameObject playerNameInputFieldHolder;
+    [SerializeField]
+    private TMP_InputField playerNameInputField;
 
     [SerializeField]
     private GameObject flarePrefab;
@@ -92,7 +98,7 @@ public class GameManager : MonoBehaviour
     {
         ships = new Ship[shipsToPlace.Length];
 
-        commandSender.sendNameCommand(localPlayerName);
+        playerNameInputFieldHolder.SetActive(true);
     }
 
     public void gameStarts()
@@ -103,8 +109,8 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (localPlayer == null) return;
         if (nameSelection) return;
+        if (localPlayer == null) return;
 
         if (!donePlacing)
         {
@@ -238,5 +244,19 @@ public class GameManager : MonoBehaviour
         Debug.LogError("Could not retreive Player by ID" + playerID);
         player = null;
         return false;
+    }
+
+    public void onInputFieldClic()
+    {
+        localPlayerName = playerNameInputField.text;
+        nameSelection = false;
+
+        playerNameInputFieldHolder.SetActive(false);
+
+        DebugTextManager.instance.sendTextToDebug("Chose name " + localPlayerName);
+
+        //Now that name is choosen,we can connect to server
+        NetworkManager.instance.startTCP();
+        commandSender.sendNameCommand(localPlayerName);
     }
 }

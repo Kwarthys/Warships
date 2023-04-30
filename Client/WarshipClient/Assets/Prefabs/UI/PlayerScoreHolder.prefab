@@ -78,8 +78,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f98c516455faeb241a0194bbaf8e4870, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nameText: {fileID: 5748406623131540364}
-  scoreText: {fileID: 6668236785136772505}
+  nameTextMesh: {fileID: 5748406623131540364}
+  scoreTextMesh: {fileID: 6668236785136772505}
 --- !u!1 &2584389542094277859
 GameObject:
   m_ObjectHideFlags: 0

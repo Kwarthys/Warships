@@ -129,30 +129,33 @@ public class CommandManager : MonoBehaviour
         int i;
         for (i = 0; i < command.data.Length; i++)
         {
-            buf[i+2] = (byte)command.data[i];
+            if(command.data[i] < 256)
+            {
+                buf[i+2] = (byte)command.data[i];
+            }
         }
 
         return i + 2;
     }
 
-    public void displayCommand(Command c)
+    public static string displayCommand(Command c)
     {
         if(c.id == CommandID.NameSend)
         {
-            displayStringCommand((StringCommand)c);
+            return displayStringCommand((StringCommand)c);
         }
         else
         {
-            displayIntArrayCommand((IntArrayCommand)c);
+            return displayIntArrayCommand((IntArrayCommand)c);
         }
     }
 
-    public void displayStringCommand(StringCommand c)
+    public static string displayStringCommand(StringCommand c)
     {
-        Debug.Log(c.id + " " + c.param + ": " + c.data);
+        return c.id + " " + c.param + ": " + c.data;
     }
 
-    public void displayIntArrayCommand(IntArrayCommand c)
+    public static string displayIntArrayCommand(IntArrayCommand c)
     {
         StringBuilder sb = new StringBuilder();
         sb.Append(c.id);
@@ -166,7 +169,7 @@ public class CommandManager : MonoBehaviour
             sb.Append(" ");
         }
 
-        Debug.Log(sb.ToString());
+        return sb.ToString();
     }
 }
 

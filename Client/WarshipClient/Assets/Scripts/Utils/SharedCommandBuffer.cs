@@ -1,45 +1,41 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Threading;
 
 public class SharedCommandBuffer
 {
-    private volatile bool theLock = false;
+    private Mutex mutex = new Mutex();
 
-    private volatile List<Command> buffer = new List<Command>();
+    private Queue<Command> buffer = new Queue<Command>();
 
     public void waitToAdd(Command c)
     {
-        while (theLock) ;
-        theLock = true;
-        buffer.Add(c);
-        theLock = false;
+        mutex.WaitOne();
+        buffer.Enqueue(c);
+        mutex.ReleaseMutex();
     }
 
     public bool tryToGet(out Command c)
     {
-        if(!theLock)
+        if(mutex.WaitOne(System.TimeSpan.FromMilliseconds(0.1))) //0.1ms wait on mainthread
         {
-            c = null;
-            return false;
+            //can read
+            if (buffer.Count > 0)
+            {
+                c = buffer.Dequeue();
+                int size = buffer.Count;
+                mutex.ReleaseMutex();
+
+                DebugTextManager.instance.sendTextToDebug("Successfully retrived command from buffer, " + size + " left.");
+                return true;
+            }
+
+            mutex.ReleaseMutex();
         }
 
-        int size = 0;
-        theLock = true;
-
-        if(buffer.Count == 0)
-        {
-            c = null;
-        }
-        else
-        {
-            c = buffer[0];
-            buffer.RemoveAt(0);
-            size = buffer.Count;
-        }
-
-        theLock = false;
-        Debug.Log("Successfully retrived command from buffer, " + size + " left.");
-        return true;
+        //can't read or buffer empty
+        c = null;
+        return false;        
     }
 }

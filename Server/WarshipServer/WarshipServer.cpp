@@ -50,8 +50,8 @@ int main()
 
     GameManager gameManager;
     NetworkManager networkManager;
-    //gameManager.networkManager = &networkManager;
-    //networkManager.gameManager = &gameManager;      //we can start now that everyone has been introduced
+    gameManager.networkManager = &networkManager;
+    networkManager.gameManager = &gameManager;      //we can start now that everyone has been introduced
 
     networkManager.startServer();
 

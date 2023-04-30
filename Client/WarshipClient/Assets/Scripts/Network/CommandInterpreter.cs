@@ -4,8 +4,15 @@ using UnityEngine;
 
 public class CommandInterpreter
 {
+
     public void treatIncomingCommand(Command c)
     {
+        bool printToDebug = true;
+        if(printToDebug)
+        {
+            DebugTextManager.instance.sendTextToDebug(CommandManager.displayCommand(c) + "\n");
+        }
+
         if(c.id == CommandManager.CommandID.GameStarts)
         {
             GameManager.instance.gameStarts();

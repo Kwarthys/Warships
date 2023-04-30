@@ -19,9 +19,9 @@ class GameManager
 
 		void treatCommand(const Command* command);
 
-		void setupNewPlayer(int playerID);
-		void setPlayerName(int playerID, std::string playerName);
-		bool placePlayerShip(int playerID, Ship::ShipType shipType, Ship::Orientation facing, int rootNode);
+		void setupNewPlayer(const int playerID);
+		void setPlayerName(const int playerID, const std::string playerName);
+		bool placePlayerShip(const int playerID, const Ship::ShipType shipType, const Ship::Orientation facing, const int rootNode);
 
 		NetworkManager* networkManager;
 

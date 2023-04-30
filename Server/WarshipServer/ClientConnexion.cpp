@@ -11,7 +11,7 @@ void ClientConnexion::manageClientCommunication(ClientConnexion& clientConnexion
 
         std::cout << "Received " << rcvLen << std::endl;
 
-        if (rcvLen != 0)
+        if (rcvLen > 0)
         {
             std::unique_ptr<Command> command = CommandManager::deserialize(recvBuf, rcvLen);
             command->socketID = clientConnexion.clientSocket;
@@ -31,7 +31,7 @@ void ClientConnexion::manageClientCommunication(ClientConnexion& clientConnexion
 
 void ClientConnexion::sendToClient(const Command& c) const
 {
-    std::cout << "sending Command: ";
+    std::cout << "sending Command(" << clientSocket << ") : ";
     CommandManager::displayCommand(&c);
     std::cout << std::endl;
 
