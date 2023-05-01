@@ -144,10 +144,41 @@ void CommandManager::displayCommand(const Command* c)
 	}
 }
 
+std::string CommandManager::getStringCommandID(const Command::CommandID commandID)
+{
+	switch (commandID)
+	{
+		case Command::IDAttrib:
+			return "UDAttrib";
+		case Command::RegisterOther:
+			return "RegisterOther";
+		case Command::NameSend:
+			return "NameSend";
+		case Command::TargetGrid:
+			return "TargetGrid";
+		case Command::FireGrid:
+			return "FireGrid";
+		case Command::FireResult:
+			return "FireResult";
+		case Command::ShipSunk:
+			return "ShipSunk";
+		case Command::PlaceShip:
+			return "PlaceShip";
+		case Command::GameStarts:
+			return "GameStarts";
+		case Command::EndGame:
+			return "EndGame";
+		default:
+			return "Forgot CommandManager-getStringCommandID " + commandID;
+
+
+	}
+}
+
 void CommandManager::displayStringCommand(const StringCommand* c)
 {
 	std::ostringstream stream;
-	stream << "(" << c->socketID << ") " << c->id << " " << c->parameter << " : " << c->data << std::endl;
+	stream << "(" << c->socketID << ") " << getStringCommandID(c->id) << " " << c->parameter << " : " << c->data << std::endl;
 
 	std::cout << stream.str();
 }
@@ -155,7 +186,7 @@ void CommandManager::displayStringCommand(const StringCommand* c)
 void CommandManager::displayIntArrayCommand(const IntArrayCommand* c)
 {
 	std::ostringstream stream;
-	stream << "(" << c->socketID << ") " << c->id << " " << c->parameter << " : ";
+	stream << "(" << c->socketID << ") " << getStringCommandID(c->id) << " " << c->parameter << " : ";
 
 	for (size_t i = 0; i < c->data.size(); i++)
 	{

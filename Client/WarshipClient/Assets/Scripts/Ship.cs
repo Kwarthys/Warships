@@ -53,10 +53,10 @@ public class Ship
         switch(orientation)
         {
             case Orientation.NORTH:
-                y = -(length/2);
+                y = -(length/2) + evenOffset;
                 break;
             case Orientation.SOUTH:
-                y = (length / 2) + evenOffset;
+                y = (length / 2);
                 break;
             case Orientation.EAST:
                 x = -(length / 2) + evenOffset;

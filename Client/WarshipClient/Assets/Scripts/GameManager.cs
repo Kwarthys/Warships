@@ -31,6 +31,8 @@ public class GameManager : MonoBehaviour
     private bool nameSelection = true;
 
     [SerializeField]
+    private GameObject cameraHolder;
+    [SerializeField]
     private GameObject playerNameInputFieldHolder;
     [SerializeField]
     private TMP_InputField playerNameInputField;
@@ -85,6 +87,8 @@ public class GameManager : MonoBehaviour
         DebugTextManager.instance.sendTextToDebug("LocalPlayerID: " + id);
 
         ScoreDisplayManager.instance.registerNewPlayer(id, localPlayerName, 5, true);
+
+        cameraHolder.transform.position = playerPlacements[playerPlacement].position;
     }
 
     public void registerPlayerName(int playerID, string playerName)

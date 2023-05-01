@@ -21,6 +21,8 @@ class CommandManager
 
 		static void displayCommand(const Command* c);
 
+		static std::string getStringCommandID(const Command::CommandID commandID);
+
 	private:
 		static void displayStringCommand(const StringCommand* c);
 		static void displayIntArrayCommand(const IntArrayCommand* c);

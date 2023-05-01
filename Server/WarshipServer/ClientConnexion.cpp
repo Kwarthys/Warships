@@ -6,7 +6,7 @@ void ClientConnexion::manageClientCommunication(ClientConnexion& clientConnexion
     while (true)
     {
         char recvBuf[255];
-        std::cout << "ready to listen to " << clientConnexion.clientSocket << std::endl;
+        //std::cout << "ready to listen to " << clientConnexion.clientSocket << std::endl;
         int rcvLen = recv(clientConnexion.clientSocket, recvBuf, 255, 0);
 
         std::cout << "Received " << rcvLen << std::endl;

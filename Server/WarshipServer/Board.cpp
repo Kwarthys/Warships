@@ -73,6 +73,8 @@ void Board::assignShipToMap(Ship& ship)
 
 bool Board::isSpotFree(Footprint& spot)
 {
+	std::cout << "x:" << spot.x << " y:" << spot.y << " w:" << spot.w << " h:" << spot.h << std::endl;
+
 	bool available = false;
 	/*** Check map boundaries ***/
 	if (spot.x >= 0 && spot.x + spot.w - 1 < sizeX && spot.y >= 0 && spot.y + spot.h - 1 < sizeY)
@@ -91,6 +93,10 @@ bool Board::isSpotFree(Footprint& spot)
 				available = available && !map.at(nodeIndex).taken; //if one is false, free will be false and loop terminated
 			}
 		}
+	}
+	else
+	{
+		std::cout << "Ship outside boundaries" << std::endl;
 	}
 
 	return available;

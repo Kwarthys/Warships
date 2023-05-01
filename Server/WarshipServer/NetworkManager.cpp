@@ -29,7 +29,7 @@ void NetworkManager::startServer()
 
     int receivedCommands = 0;
 
-    while (receivedCommands < 5)
+    while (receivedCommands < 50) //need proper out of this loop
     {
         if (acceptMoreConnexions)
         {

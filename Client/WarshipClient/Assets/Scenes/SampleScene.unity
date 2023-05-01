@@ -2185,6 +2185,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 44cdb2d7e4b64464c983be5d6b7750aa, type: 2}
   - {fileID: 11400000, guid: 1517cd4905e490d4080792ddc7b12763, type: 2}
   - {fileID: 11400000, guid: 8a88e78ef90837048ac16ac3e8fd8f8e, type: 2}
+  cameraHolder: {fileID: 1002453132}
   playerNameInputFieldHolder: {fileID: 1302148612}
   playerNameInputField: {fileID: 309835343}
   flarePrefab: {fileID: 8105091897640311835, guid: cff56dab703c093439c0f73bb5a94b4a,
