@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Destroyer
   m_EditorClassIdentifier: 
   shipName: Destroyer
-  length: 2
+  type: 1
   shipPrefab: {fileID: 5885853943023486351, guid: 140ba3e5d75d701458c5d94439a39c4c,
     type: 3}

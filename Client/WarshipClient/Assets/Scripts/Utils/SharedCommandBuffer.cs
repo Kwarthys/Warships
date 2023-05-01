@@ -26,11 +26,10 @@ public class SharedCommandBuffer
                 c = buffer.Dequeue();
                 int size = buffer.Count;
                 mutex.ReleaseMutex();
-
-                DebugTextManager.instance.sendTextToDebug("Successfully retrived command from buffer, " + size + " left.");
                 return true;
             }
 
+            //lock but nothing to read
             mutex.ReleaseMutex();
         }
 

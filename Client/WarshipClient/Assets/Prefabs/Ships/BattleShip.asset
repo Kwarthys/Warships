@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: BattleShip
   m_EditorClassIdentifier: 
   shipName: BattleShip
-  length: 4
+  type: 4
   shipPrefab: {fileID: 4995196596315189035, guid: 088a820ddce5ce943b1b6ff7054af483,
     type: 3}

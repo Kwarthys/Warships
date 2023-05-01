@@ -7,6 +7,6 @@ public class ShipScriptableObject : ScriptableObject
 {
     public string shipName;
 
-    public int length;
+    public Ship.ShipType type;
     public GameObject shipPrefab;
 }

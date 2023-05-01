@@ -96,7 +96,7 @@ void NetworkManager::welcomeClients(NetworkManager* networkManager, SOCKET serve
             IntArrayCommand c;
             c.id = Command::IDAttrib;
             c.parameter = networkManager->indeciesToSockets.back();
-            c.data.push_back(0);
+            c.data.push_back(networkManager->connexions.size()-1);
 
             networkManager->connexions.back().sendToClient(c);
         }

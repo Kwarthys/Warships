@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Cruiser
   m_EditorClassIdentifier: 
   shipName: Cruiser
-  length: 3
+  type: 3
   shipPrefab: {fileID: 237528656211846524, guid: 606a1b3536731674b9d0522c376bbf08,
     type: 3}

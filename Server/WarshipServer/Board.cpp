@@ -47,6 +47,8 @@ bool Board::placeShip(Ship ship)
 		ship.index = ships.size();
 		ships.emplace_back(ship);
 		assignShipToMap(ship);
+
+		debugDisplayMap();
 	}
 
 	return false;
@@ -107,6 +109,8 @@ Vector2 Board::fromIndexToCoord(int index)
 void Board::debugDisplayMap()
 {
 	std::ostringstream text;
+
+	text << "Player " << playerID << ":" << std::endl;
 
 	for (int j = sizeY - 1; j >= 0; --j)
 	{

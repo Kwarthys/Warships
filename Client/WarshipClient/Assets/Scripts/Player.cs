@@ -16,8 +16,10 @@ public class Player : MonoBehaviour
     public void initPlayer(int playerID, Vector3 gridCenter)
     {
         GameObject gridHolder = new GameObject("GridHolderP" + playerID);
+        gridHolder.transform.position = gridCenter;
         gridHolder.transform.SetParent(transform);
         gridManager = gridHolder.AddComponent<GridManager>();
+        gridManager.initialize();
         targetingManager = gameObject.AddComponent<TargetingManager>();
 
         this.playerID = playerID;

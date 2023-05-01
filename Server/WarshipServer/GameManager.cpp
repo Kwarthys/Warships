@@ -18,7 +18,7 @@ void GameManager::setupNewPlayer(const int playerID)
 	command.id = Command::RegisterOther;
 	command.parameter = playerID;
 	command.socketID = -2;
-	command.data.push_back(playerBoards.size());
+	command.data.push_back(playerBoards.size()-1);
 	networkManager->sendCommandToEveryoneExcept(playerID, command);
 
 	//tell this one about the others

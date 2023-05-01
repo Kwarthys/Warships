@@ -64,16 +64,18 @@ public class GameManager : MonoBehaviour
 
     public Player registerPlayer(int index, int playerPlacement)
     {
+        DebugTextManager.instance.sendTextToDebug("Registering Player" + index + " at " + playerPlacement);
+
         GameObject playerObject = new GameObject("Player" + index + "Object");
-#if UNITY_EDITOR
-        playerObject.transform.SetParent(transform);//keeping editor hierarchy clear, only in the editor
-#endif
         Player player = playerObject.AddComponent<Player>();
         player.initPlayer(index, playerPlacements[playerPlacement].position);
 
         playerIndexToID.Add(index);
         players.Add(player);
 
+#if UNITY_EDITOR
+        playerObject.transform.SetParent(transform);//keeping editor hierarchy clear, only in the editor
+#endif
         return player;
     }
 
@@ -178,7 +180,7 @@ public class GameManager : MonoBehaviour
             if (placingIndex < shipsToPlace.Length)
             {
                 placingGhost = Instantiate(shipsToPlace[placingIndex].shipPrefab);
-                ghostLength = shipsToPlace[placingIndex].length;
+                ghostLength = Ship.typeToLength(shipsToPlace[placingIndex].type);
 
                 ships[placingIndex] = new Ship(shipsToPlace[placingIndex], placingIndex);
             }
@@ -210,7 +212,7 @@ public class GameManager : MonoBehaviour
                         placingGhost.GetComponent<ShipAnimator>().animate = true;
                         placingGhost = null;
 
-                        commandSender.sendPlaceShip((int)ships[placingIndex].orientation, localPlayer.gridManager.getRootNodeOfShip(point, ships[placingIndex]));
+                        commandSender.sendPlaceShip((int)ships[placingIndex].orientation, localPlayer.gridManager.getRootNodeOfShip(point, ships[placingIndex]), (int)ships[placingIndex].type);
                     }
                 }
             }            

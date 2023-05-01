@@ -4,10 +4,8 @@ using UnityEngine;
 
 public class GridManager : MonoBehaviour
 {
-    [SerializeField]
-    private Vector2Int gridSize = new Vector2Int(10,10);
-    [SerializeField]
-    private float cellUnitSize = 1;
+    public Vector2Int gridSize = new Vector2Int(10,10);
+    public float cellUnitSize = 4;
 
     private Vector3 offset;
     private Vector3 cellOffset;
@@ -18,7 +16,7 @@ public class GridManager : MonoBehaviour
 
     private Dictionary<int, List<FXController>> shipIndexToHitObjects = new Dictionary<int, List<FXController>>();
 
-    void Start()
+    public void initialize()
     {
         map = new GridNode[gridSize.x * gridSize.y];
 
@@ -203,8 +201,12 @@ public class GridManager : MonoBehaviour
     public int getRootNodeOfShip(Vector3 worldCenterPos, Ship ship)
     {
         int index = fromWorldToNode(worldCenterPos);
+        Debug.Log("Ship at " + index);
         Vector2Int coords = fromIndexToCoords(index);
-        coords -= ship.getShipRootOffset();
+        Debug.Log("Which is " + coords);
+        coords += ship.getShipRootOffset();
+        Debug.Log("Root is at " + coords);
+        Debug.Log("Meaning index " + fromCoordsToIndex(coords));
 
         return fromCoordsToIndex(coords);
     }

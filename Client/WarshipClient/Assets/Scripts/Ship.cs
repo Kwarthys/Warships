@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class Ship
 {
-    public enum Orientation { NORTH, WEST, SOUTH, EAST};
+    public enum Orientation { NORTH, WEST, SOUTH, EAST };
+    public enum ShipType { None, Destroyer, Submarine, Cruiser, Battleship, Carrier };
 
     public Orientation orientation = Orientation.NORTH;
     public string shipName = "Ship";
+    public ShipType type;
 
     public int length { get; private set; }
     public int index { get; private set; }
@@ -33,7 +35,8 @@ public class Ship
 
     public Ship(ShipScriptableObject shipScriptable, int index)
     {
-        this.length = shipScriptable.length;
+        this.type = shipScriptable.type;
+        this.length = typeToLength(this.type);
         this.index = index;
 
         this.shipName = shipScriptable.shipName;
@@ -53,15 +56,17 @@ public class Ship
                 y = -(length/2);
                 break;
             case Orientation.SOUTH:
-                y = (length / 2) - evenOffset;
+                y = (length / 2) + evenOffset;
                 break;
             case Orientation.EAST:
-                x = -(length / 2);
+                x = -(length / 2) + evenOffset;
                 break;
             case Orientation.WEST:
-                x = (length / 2) - evenOffset;
+                x = (length / 2);
                 break;
         }
+
+        Debug.Log("L:" + length + " O:" + orientation + " offset:" + x + "," + y + ". EvenOffset: " + evenOffset);
 
         return new Vector2Int(x, y);
     }
@@ -89,5 +94,24 @@ public class Ship
         //Debug.Log("x:" + x + " y:" + y + " w:" + w + " h:" + h);
 
         return new RectInt(x, y, w, h);
+    }
+
+    public static int typeToLength(ShipType type)
+    {
+        switch(type)
+        {
+            case ShipType.Destroyer:
+                return 2;
+            case ShipType.Submarine:
+            case ShipType.Cruiser:
+                return 3;
+            case ShipType.Battleship:
+                return 4;
+            case ShipType.Carrier:
+                return 5;
+            case ShipType.None:
+            default:
+                return -1;
+        }
     }
 }

@@ -42,12 +42,12 @@ public class CommandSender
         sendCommand(command);
     }
 
-    public void sendPlaceShip(int shipOrientation, int rooNodeId)
+    public void sendPlaceShip(int shipOrientation, int rooNodeId, int shipType)
     {
         IntArrayCommand command = new IntArrayCommand();
         command.id = CommandManager.CommandID.PlaceShip;
-        command.param = shipOrientation;
-        command.data = new int[1] { rooNodeId };
+        command.param = (int)shipType;
+        command.data = new int[2] { shipOrientation, rooNodeId };
 
         sendCommand(command);
     }

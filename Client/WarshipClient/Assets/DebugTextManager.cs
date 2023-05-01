@@ -30,6 +30,7 @@ public class DebugTextManager : MonoBehaviour
         builder.Clear();
         for (int i = 0; i < messages.Count; ++i)
         {
+            if(i!=0)builder.Append("\n");
             builder.Append(messages[i]);
         }
         textMesh.text = builder.ToString();
