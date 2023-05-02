@@ -20,8 +20,9 @@ class NetworkManager
 	public:
 		void startServer();
 
-		void sendCommandToEveryoneExcept(int exceptID, Command& c);
-		void sendCommandToPlayerID(int playerID, Command& c);
+		void sendCommandToEveryoneExcept(int exceptID, const Command& c);
+		void sendCommandToPlayerID(int playerID, const Command& c);
+		void sendCommandToEveryone(const Command& c);
 
 		GameManager* gameManager;
 

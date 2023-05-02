@@ -27,14 +27,27 @@ public class ScoreDisplayManager : MonoBehaviour
             holder.nameTextMesh.fontStyle = TMPro.FontStyles.Italic;
         }
 
+
         playerIndexToID.Add(playerID);
         displayTexts.Add(holder);
+        setPlayerReadyImage(playerIndexToID.Count - 1, false);
+    }
+
+    public void setPlayerReady(int playerID, bool readyState)
+    {
+        setPlayerReadyImage(getPlayerIndexFromID(playerID), readyState);
     }
 
     public void updatePlayerScore(int playerID, int playerScore)
     {
         int index = getPlayerIndexFromID(playerID);
         displayTexts[index].scoreTextMesh.text = playerScore.ToString();
+    }
+
+    private void setPlayerReadyImage(int playerIndex, bool readyState)
+    {
+        displayTexts[playerIndex].readyImage.gameObject.SetActive(readyState);
+        displayTexts[playerIndex].notReadyImage.gameObject.SetActive(!readyState);
     }
 
     private int getPlayerIndexFromID(int playerID)

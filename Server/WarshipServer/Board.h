@@ -29,6 +29,8 @@ class Board
 
 		std::string playerName;
 
+		bool playerReady = false;
+
 	private:
 		int playerID;
 		int sizeX;

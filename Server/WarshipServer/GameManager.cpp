@@ -66,6 +66,46 @@ bool GameManager::placePlayerShip(const int playerID, const Ship::ShipType shipT
 	return playerBoards.at(index).placeNewShip(shipType, facing, rootNode);
 }
 
+void GameManager::managePlayersReady(int playerID, bool readyStatus)
+{
+
+	int index = getBoardIndexOfPlayer(playerID);
+	playerBoards.at(index).playerReady = readyStatus;
+
+	//Check if everyone is ready
+	bool everyOneReady = readyStatus;
+	for (size_t i = 0; i < playerBoards.size() && everyOneReady; i++)
+	{
+		everyOneReady = everyOneReady && playerBoards.at(i).playerReady;
+	}
+
+	if (everyOneReady)
+	{
+		//warn everyone
+		std::cout << "Warning everyone that game starts" << endl;
+		IntArrayCommand command;
+		command.id = Command::GameStarts;
+		command.parameter = 0; //everyone ready
+		command.data.push_back(0);//padding for easier client management
+		command.socketID = -3;//won't be sent, just for monitoring
+
+		networkManager->sendCommandToEveryone(command);
+	}
+	else
+	{
+		//warn the others
+		std::cout << "Warning others about " << playerID << "'s " << readyStatus << " readyState" << endl;
+		IntArrayCommand command;
+		command.id = Command::GameStarts;
+		command.parameter = playerID;
+		command.socketID = -2;//won't be sent, just for monitoring
+		command.data.push_back(readyStatus ? 1 : 0);
+		networkManager->sendCommandToEveryoneExcept(playerID, command);
+	}
+
+	
+}
+
 int GameManager::getBoardIndexOfPlayer(int playerID)
 {
 	for (size_t i = 0; i < boardIndexToPlayerID.size(); i++)

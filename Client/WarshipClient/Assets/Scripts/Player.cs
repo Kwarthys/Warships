@@ -13,7 +13,9 @@ public class Player : MonoBehaviour
 
     private bool initialized = false;
 
-    public void initPlayer(int playerID, Vector3 gridCenter)
+    private bool isLocal = false;
+
+    public void initPlayer(int playerID, Vector3 gridCenter, bool isLocal)
     {
         GameObject gridHolder = new GameObject("GridHolderP" + playerID);
         gridHolder.transform.position = gridCenter;
@@ -21,6 +23,7 @@ public class Player : MonoBehaviour
         gridManager = gridHolder.AddComponent<GridManager>();
         gridManager.initialize();
         targetingManager = gameObject.AddComponent<TargetingManager>();
+        targetingManager.isLocal = isLocal;
 
         this.playerID = playerID;
         initialized = true;

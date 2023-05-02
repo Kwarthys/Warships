@@ -30,15 +30,12 @@ public class GameManager : MonoBehaviour
     private bool otherDonePlacing = false;
     private bool nameSelection = true;
 
-    [SerializeField]
-    private GameObject cameraHolder;
-    [SerializeField]
-    private GameObject playerNameInputFieldHolder;
-    [SerializeField]
-    private TMP_InputField playerNameInputField;
+    [Header("Prefabs")]
 
     [SerializeField]
     private GameObject flarePrefab;
+    [SerializeField]
+    private GameObject localFlarePrefab;
     [SerializeField]
     private GameObject buoyPrefab;
     [SerializeField]
@@ -48,29 +45,42 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private GameObject sunkFXPrefab;
     public GameObject getFlarePrefab() { return flarePrefab; }
+    public GameObject getLocalFlarePrefab() { return localFlarePrefab; }
     public GameObject getBuoyPrefab() { return buoyPrefab; }
     public GameObject getHitFXPrefab() { return hitFXPrefab; }
     public GameObject getMissBuoyPrefab() { return missBuoyPrefab; }
     public GameObject getSunkFXPrefab() { return sunkFXPrefab; }
 
+    [Header("UI")]
+    [SerializeField]
+    private GameObject fireButton;
+    [SerializeField]
+    private GameObject readyButton;
+    [SerializeField]
+    private GameObject playerNameInputFieldHolder;
+    [SerializeField]
+    private TMP_InputField playerNameInputField;
+
+    [Header("Misc")]
+
     [SerializeField]
     private Transform[] playerPlacements;
-
     [SerializeField]
     private Camera theCamera;
-
     [SerializeField]
     private LayerMask seaLayer;
+    [SerializeField]
+    private GameObject cameraHolder;
 
     public string localPlayerName = "Player";
 
-    public Player registerPlayer(int index, int playerPlacement)
+    public Player registerPlayer(int index, int playerPlacement, bool isLocal = false)
     {
         DebugTextManager.instance.sendTextToDebug("Registering Player" + index + " at " + playerPlacement);
 
         GameObject playerObject = new GameObject("Player" + index + "Object");
         Player player = playerObject.AddComponent<Player>();
-        player.initPlayer(index, playerPlacements[playerPlacement].position);
+        player.initPlayer(index, playerPlacements[playerPlacement].position, isLocal);
 
         playerIndexToID.Add(index);
         players.Add(player);
@@ -83,7 +93,7 @@ public class GameManager : MonoBehaviour
 
     public void registerLocalPlayerID(int id, int playerPlacement)
     {
-        localPlayer = registerPlayer(id, playerPlacement);
+        localPlayer = registerPlayer(id, playerPlacement, true);
         DebugTextManager.instance.sendTextToDebug("LocalPlayerID: " + id);
 
         ScoreDisplayManager.instance.registerNewPlayer(id, localPlayerName, 5, true);
@@ -105,11 +115,23 @@ public class GameManager : MonoBehaviour
         ships = new Ship[shipsToPlace.Length];
 
         playerNameInputFieldHolder.SetActive(true);
+
+        fireButton.SetActive(false);
+        readyButton.SetActive(false);
     }
 
-    public void gameStarts()
+    public void gameStarts(int playerID, bool readyStatus)
     {
-        otherDonePlacing = true;
+        if(playerID == 0)
+        {
+            //Everyone is ready, game starts
+            otherDonePlacing = true;
+        }
+        else
+        {
+            //playerID is ready, update display
+            ScoreDisplayManager.instance.setPlayerReady(playerID, readyStatus);
+        }
     }
 
     // Update is called once per frame
@@ -190,6 +212,8 @@ public class GameManager : MonoBehaviour
             }
             else
             {
+                readyButton.SetActive(true);
+
                 donePlacing = true;
                 return;
             }
@@ -264,5 +288,16 @@ public class GameManager : MonoBehaviour
         //Now that name is choosen,we can connect to server
         NetworkManager.instance.startTCP();
         commandSender.sendNameCommand(localPlayerName);
+    }
+
+    public void onFireButtonClic()
+    {
+
+    }
+
+    public void onReadyButtonClic(bool status)
+    {
+        commandSender.sendReadyCommand(status);
+        ScoreDisplayManager.instance.setPlayerReady(localPlayer.playerID, status);
     }
 }

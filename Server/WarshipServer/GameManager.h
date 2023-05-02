@@ -23,6 +23,8 @@ class GameManager
 		void setPlayerName(const int playerID, const std::string playerName);
 		bool placePlayerShip(const int playerID, const Ship::ShipType shipType, const Ship::Orientation facing, const int rootNode);
 
+		void managePlayersReady(int playerID, bool readyStatus);
+
 		NetworkManager* networkManager;
 
 	private:

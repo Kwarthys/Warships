@@ -51,4 +51,14 @@ public class CommandSender
 
         sendCommand(command);
     }
+
+    public void sendReadyCommand(bool readyState)
+    {
+        IntArrayCommand command = new IntArrayCommand();
+        command.id = CommandManager.CommandID.GameStarts;
+        command.param = 0;
+        command.data = new int[1] { readyState ? 1 : 0 };
+
+        sendCommand(command);
+    }
 }

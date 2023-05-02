@@ -3,11 +3,7 @@
 
 void CommandInterpreter::treatCommand(const Command* command)
 {
-	if (command->id == Command::GameStarts)
-	{
-
-	}
-	else if (command->id == Command::EndGame)
+	 if (command->id == Command::EndGame)
 	{
 
 	}
@@ -26,8 +22,14 @@ void CommandInterpreter::treatCommand(const Command* command)
 			case Command::PlaceShip:
 				gameManager->placePlayerShip(c->socketID, (Ship::ShipType)c->parameter, (Ship::Orientation)c->data[0], c->data[1]);
 				break;
+
+			case Command::GameStarts:
+				gameManager->managePlayersReady(c->socketID, c->data[0]);
+				break;
+
 			case Command::TargetGrid:
 				break;
+
 			case Command::FireGrid:
 				break;
 

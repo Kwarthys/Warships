@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class CommandInterpreter
 {
-
     public void treatIncomingCommand(Command c)
     {
         bool printToDebug = true;
@@ -13,11 +12,7 @@ public class CommandInterpreter
             DebugTextManager.instance.sendTextToDebug(CommandManager.displayCommand(c) + "\n");
         }
 
-        if(c.id == CommandManager.CommandID.GameStarts)
-        {
-            GameManager.instance.gameStarts();
-        }
-        else if(c.id == CommandManager.CommandID.NameSend)
+        if(c.id == CommandManager.CommandID.NameSend)
         {
             StringCommand command = (StringCommand)c;
             GameManager.instance.registerPlayerName(command.param, command.data);
@@ -33,6 +28,10 @@ public class CommandInterpreter
                     break;
                 case CommandManager.CommandID.RegisterOther:
                     GameManager.instance.registerPlayer(c.param, command.data[0]);
+                    break;
+
+                case CommandManager.CommandID.GameStarts:
+                    GameManager.instance.gameStarts(c.param, command.data[0] == 1);
                     break;
 
                 case CommandManager.CommandID.EndGame:

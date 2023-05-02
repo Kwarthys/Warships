@@ -105,7 +105,7 @@ void NetworkManager::welcomeClients(NetworkManager* networkManager, SOCKET serve
     cout << "Welcomer Thread closed" << endl;
 }
 
-void NetworkManager::sendCommandToEveryoneExcept(int exceptID, Command& c)
+void NetworkManager::sendCommandToEveryoneExcept(int exceptID, const Command& c)
 {
     for (size_t i = 0; i < connexions.size(); i++)
     {
@@ -116,7 +116,7 @@ void NetworkManager::sendCommandToEveryoneExcept(int exceptID, Command& c)
     }
 }
 
-void NetworkManager::sendCommandToPlayerID(int playerID, Command& c)
+void NetworkManager::sendCommandToPlayerID(int playerID, const Command& c)
 {
     for (size_t i = 0; i < connexions.size(); i++)
     {
@@ -125,5 +125,13 @@ void NetworkManager::sendCommandToPlayerID(int playerID, Command& c)
             connexions.at(i).sendToClient(c);
             return;
         }
+    }
+}
+
+void NetworkManager::sendCommandToEveryone(const Command& c)
+{
+    for (size_t i = 0; i < connexions.size(); i++)
+    {
+        connexions.at(i).sendToClient(c);
     }
 }

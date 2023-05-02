@@ -15,6 +15,8 @@ public class TargetingManager : MonoBehaviour
 
     private Vector2Int[] targets;
 
+    public bool isLocal = false;
+
     private void Start()
     {
         flares = new FlareAnimator[flarePoolSize];
@@ -24,7 +26,15 @@ public class TargetingManager : MonoBehaviour
         /** setting up pool of flares **/
         for (int i = 0; i < flares.Length; i++)
         {
-            GameObject flare = Instantiate(GameManager.instance.getFlarePrefab(), transform);
+            GameObject flare;
+            if(isLocal)
+            {
+                flare = Instantiate(GameManager.instance.getLocalFlarePrefab(), transform);
+            }
+            else
+            {
+                flare = Instantiate(GameManager.instance.getFlarePrefab(), transform);
+            }
             FlareAnimator animator = flare.GetComponent<FlareAnimator>();
             animator.init();
 
