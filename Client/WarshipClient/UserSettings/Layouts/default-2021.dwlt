@@ -120,7 +120,7 @@ MonoBehaviour:
   m_MinSize: {x: 400, y: 200}
   m_MaxSize: {x: 32384, y: 16192}
   vertical: 0
-  controlID: 39
+  controlID: 156
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -145,7 +145,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 200}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 129
+  controlID: 162
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -273,7 +273,7 @@ MonoBehaviour:
   m_MinSize: {x: 100, y: 200}
   m_MaxSize: {x: 8096, y: 16192}
   vertical: 1
-  controlID: 94
+  controlID: 127
 --- !u!114 &12
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -704,9 +704,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: -6.5858192, y: 9.597845, z: 10.010069}
+    m_Target: {x: 432.73016, y: 155.3721, z: 180.28665}
     speed: 2
-    m_Value: {x: -6.5858192, y: 9.597845, z: 10.010069}
+    m_Value: {x: 432.73016, y: 155.3721, z: 180.28665}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -753,13 +753,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: 0.15335757, y: -0.7815304, z: 0.21150309, w: 0.5665828}
+    m_Target: {x: 0.10807497, y: -0.02237478, z: 0.0024081217, w: 0.99391705}
     speed: 2
-    m_Value: {x: 0.15335312, y: -0.78150773, z: 0.21149696, w: 0.5665664}
+    m_Value: {x: 0.108071856, y: -0.022374135, z: 0.0024080523, w: 0.9938884}
   m_Size:
-    m_Target: 12.124356
+    m_Target: 230.47182
     speed: 2
-    m_Value: 12.124356
+    m_Value: 230.47182
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -847,7 +847,7 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: 9641feff6842feff8644feff34fbffff
+      m_ExpandedIDs: ea0dfaffbc0efaffd010faff0e64faffe064fafff466fafffc7ffbfff499fbff32a6fbff3aa6fbff6260fcff3461fcff4663fcff78b7fcff4ab8fcff5cbafcff3c16ffff96c3ffff34fbffff1a6d000046a500008aa50000baa50000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -913,22 +913,22 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scripts
+    - Assets
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scripts
+  - Assets
   m_LastFoldersGridSize: -1
   m_LastProjectPath: E:\Documents\Projets\Warships\Client\WarshipClient
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: f6700000
-    m_LastClickedID: 28918
-    m_ExpandedIDs: 00000000e2700000f270000000ca9a3b
+    m_SelectedIDs: e2700000
+    m_LastClickedID: 28898
+    m_ExpandedIDs: 00000000e2700000f0700000f270000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -984,7 +984,7 @@ MonoBehaviour:
     m_SelectedInstanceIDs: 
     m_LastClickedInstanceID: 0
     m_HadKeyboardFocusLastEvent: 1
-    m_ExpandedInstanceIDs: 
+    m_ExpandedInstanceIDs: 00000000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1008,7 +1008,7 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
     m_NewAssetIndexInList: -1
-    m_ScrollPosition: {x: 0, y: 0}
+    m_ScrollPosition: {x: 0, y: 7}
     m_GridSize: 64
   m_SkipHiddenPackages: 0
   m_DirectoriesAreaWidth: 115

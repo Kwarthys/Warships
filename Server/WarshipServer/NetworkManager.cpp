@@ -27,13 +27,13 @@ void NetworkManager::startServer()
 
     std::thread welcomingThread(welcomeClients, this, s);
 
-    int receivedCommands = 0;
+    bool keepRunning = true;
 
-    while (receivedCommands < 50) //need proper out of this loop
+    while (keepRunning)
     {
         if (acceptMoreConnexions)
         {
-            if (connexions.size() >= 2)
+            if (connexions.size() >= 9)
             {
                 std::cout << "Stopping further connexions" << endl;
                 acceptMoreConnexions = false;
@@ -49,7 +49,6 @@ void NetworkManager::startServer()
             if (c != nullptr)
             {
                 gameManager->treatCommand(c.get());//sync coms to clients will be sent here
-                receivedCommands++;
             }
             else
             {
@@ -58,19 +57,42 @@ void NetworkManager::startServer()
         }
         //sleep 1s
         std::this_thread::sleep_for(std::chrono::seconds(1));
+
+        if (connexions.size() > 0)
+        {
+            bool allDed = true;
+            for (size_t i = 0; i < connexions.size() && allDed; i++)
+            {
+                if (connexions.at(i).isRunning())
+                {
+                    allDed = false;
+                }
+            }
+            keepRunning = !allDed; //stop server if all clients are disconnected
+        }
     }
 
+    acceptMoreConnexions = false;
+    shutdown(s, SD_BOTH);
     
     //waiting for all threads to complete before cleaning the network utilities
     //ie waiting for all clients to disconnect at the end before shutting the server
-    for (size_t i = 0; i < connexions.size(); i++)
-    {
-        connexions[i].listenerThread.join();
-    }
+    //for (size_t i = 0; i < connexions.size(); i++)
+    //{
+    //    connexions[i].listenerThread.join();
+    //}
+    // no longer necessary, keeping at hand just in case
+
+    //TODO Welcoming thread never leaves ACCEPT, need to adress that
+    //waiting him to stop
+    std::cout << "Waiting welcomer thread" << endl;
+    welcomingThread.join();
 
     WSACleanup();
 
     std::cout << "Properly closed" << endl;
+
+    //weird abort() called here ?  Maybe cleanup ?
 }
 
 void NetworkManager::welcomeClients(NetworkManager* networkManager, SOCKET serverSocket)
@@ -81,7 +103,6 @@ void NetworkManager::welcomeClients(NetworkManager* networkManager, SOCKET serve
     while (networkManager->acceptMoreConnexions)
     {
         SOCKET clientSocket = accept(serverSocket, (SOCKADDR*)&csin, &sinsize);
-
         std::cout << "Accepted " << clientSocket << endl;
 
         if (clientSocket != INVALID_SOCKET)
