@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CommandManager : MonoBehaviour
 {
-    public enum CommandID { IDAttrib, RegisterOther, NameSend, TargetGrid, FireGrid, FireResult, ShipSunk, EndGame, PlaceShip, GameStarts }
+    public enum CommandID { IDAttrib, RegisterOther, NameSend, TargetGrid, FireGrid, FireReady, FireResult, ShipSunk, EndGame, PlaceShip, GameStarts }
 
 
     public void testSerialization()

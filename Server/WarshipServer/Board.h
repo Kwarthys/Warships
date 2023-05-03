@@ -31,6 +31,8 @@ class Board
 
 		bool playerReady = false;
 
+		std::vector<int> targetPairs;
+
 	private:
 		int playerID;
 		int sizeX;

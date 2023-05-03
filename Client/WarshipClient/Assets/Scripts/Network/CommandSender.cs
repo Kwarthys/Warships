@@ -32,12 +32,18 @@ public class CommandSender
         sendCommand(command);
     }
 
-    public void sendFireCommand(int targetedGridIndex, int[] targetedNodeIndecies)
+    public void sendFireCommand(Vector2Int[] targetedPairs)
     {
         IntArrayCommand command = new IntArrayCommand();
         command.id = CommandManager.CommandID.FireGrid;
-        command.param = targetedGridIndex;
-        command.data = targetedNodeIndecies;
+        command.param = 0;
+        command.data = new int[targetedPairs.Length * 2];
+
+        for (int i = 0; i < targetedPairs.Length; i++)
+        {
+            command.data[i * 2] = targetedPairs[i].x;
+            command.data[i * 2 + 1] = targetedPairs[i].y;
+        }
 
         sendCommand(command);
     }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,7 +13,6 @@ public class GameManager : MonoBehaviour
     }
 
     private CommandSender commandSender = new CommandSender();
-
 
     private List<Player> players = new List<Player>();
     private Player localPlayer; //shortcut to frequently used localPlayer, also present in players
@@ -52,10 +52,11 @@ public class GameManager : MonoBehaviour
     public GameObject getSunkFXPrefab() { return sunkFXPrefab; }
 
     [Header("UI")]
+
     [SerializeField]
-    private GameObject fireButton;
+    private EventSystem eventSystem;
     [SerializeField]
-    private GameObject readyButton;
+    private CustomToggleButtonManager readyButton;
     [SerializeField]
     private GameObject playerNameInputFieldHolder;
     [SerializeField]
@@ -116,8 +117,7 @@ public class GameManager : MonoBehaviour
 
         playerNameInputFieldHolder.SetActive(true);
 
-        fireButton.SetActive(false);
-        readyButton.SetActive(false);
+        readyButton.gameObject.SetActive(false);
     }
 
     public void gameStarts(int playerID, bool readyStatus)
@@ -126,6 +126,7 @@ public class GameManager : MonoBehaviour
         {
             //Everyone is ready, game starts
             otherDonePlacing = true;
+            
         }
         else
         {
@@ -171,30 +172,39 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
+            if(eventSystem.currentSelectedGameObject != null)//Clic was on UI Element
+            {
+                return;
+            }
+
             if(tryGetMousePosOnBoard(out Vector3 point))
             {
                 for (int i = 0; i < players.Count; i++)
                 {
-                    if (players[i].gridManager.trySnapWorldToGrid(point, out Vector3 gridPos))
+                    if(players[i].playerID != localPlayer.playerID) //Player can't target himself
                     {
-                        //This player is targeted by Local player
-                        localPlayer.targetingManager.target(gridPos, players[i].playerID, players[i].gridManager.fromWorldToNode(gridPos));
-                        //send target to network
+                        if (players[i].gridManager.trySnapWorldToGrid(point, out Vector3 gridPos))
+                        {
+                            //This player is targeted by Local player
+                            int targetedPlayerID = players[i].playerID;
+                            int targetedNodeIndex = players[i].gridManager.fromWorldToNode(gridPos);
+                            localPlayer.targetingManager.target(gridPos, targetedPlayerID, targetedNodeIndex);
+                            //send target to network
+                            commandSender.sendTargetCommand(targetedPlayerID, targetedNodeIndex);
+                        }
                     }
                 }
             }
         }
     }
 
-    public void registerOpponentTargeting(int attackingPlayerId, int targetGridId, int[] targetNodeIds)
+    public void registerOpponentTargeting(int attackingPlayerId, int targetGridId, int targetNodeId)
     {
         Player attacker = getPlayerByID(attackingPlayerId);
         Player attacked = getPlayerByID(targetGridId);
 
-        for (int i = 0; i < targetNodeIds.Length; i++)
-        {
-            attacker.targetingManager.target(attacked.gridManager.fromIndexToWorld(targetNodeIds[i]), targetGridId, targetNodeIds[i]);
-        }
+        attacker.targetingManager.target(attacked.gridManager.fromIndexToWorld(targetNodeId), targetGridId, targetNodeId);
+
     }
 
     private void manageShipPlacement()
@@ -212,7 +222,7 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                readyButton.SetActive(true);
+                readyButton.gameObject.SetActive(true);
 
                 donePlacing = true;
                 return;
@@ -290,14 +300,23 @@ public class GameManager : MonoBehaviour
         commandSender.sendNameCommand(localPlayerName);
     }
 
-    public void onFireButtonClic()
-    {
-
-    }
-
     public void onReadyButtonClic(bool status)
     {
-        commandSender.sendReadyCommand(status);
-        ScoreDisplayManager.instance.setPlayerReady(localPlayer.playerID, status);
+        if(!otherDonePlacing)
+        {
+            //Ready to start the game
+            commandSender.sendReadyCommand(status);
+            ScoreDisplayManager.instance.setPlayerReady(localPlayer.playerID, status);
+        }
+        else
+        {
+            if(status)
+            {
+                //Ready to fire
+                Vector2Int[] targetPairs = localPlayer.targetingManager.getTargetedNodeIds();
+
+            }
+            
+        }
     }
 }

@@ -158,6 +158,8 @@ std::string CommandManager::getStringCommandID(const Command::CommandID commandI
 			return "TargetGrid";
 		case Command::FireGrid:
 			return "FireGrid";
+		case Command::FireReady:
+			return "FireReady";
 		case Command::FireResult:
 			return "FireResult";
 		case Command::ShipSunk:

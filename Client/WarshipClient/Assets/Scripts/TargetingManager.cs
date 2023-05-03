@@ -44,7 +44,7 @@ public class TargetingManager : MonoBehaviour
         resetStates(availableShots);
     }
 
-    public Vector2Int[] getTargetedIds() { return targets; }
+    public Vector2Int[] getTargetedNodeIds() { return targets; }
 
     public void resetStates(int newAvailableShots)
     {

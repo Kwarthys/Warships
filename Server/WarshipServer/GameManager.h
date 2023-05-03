@@ -25,6 +25,9 @@ class GameManager
 
 		void managePlayersReady(int playerID, bool readyStatus);
 
+		void managePlayerTargeting(int attackingPlayerID, int attackedPlayerID, int attackedNodeIndex);
+		void managePlayerFire(int attackingPlayerID, std::vector<int> targetPairs);
+
 		NetworkManager* networkManager;
 
 	private:

@@ -28,6 +28,8 @@ void CommandInterpreter::treatCommand(const Command* command)
 				break;
 
 			case Command::TargetGrid:
+				//managePlayerTargeting(int attackingPlayerID, int attackedPlayerID, int attackedNodeIndex)
+				gameManager->managePlayerTargeting(c->socketID, c->parameter, c->data[0]);
 				break;
 
 			case Command::FireGrid:

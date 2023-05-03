@@ -106,6 +106,60 @@ void GameManager::managePlayersReady(int playerID, bool readyStatus)
 	
 }
 
+void GameManager::managePlayerTargeting(int attackingPlayerID, int attackedPlayerID, int attackedNodeIndex)
+{
+	IntArrayCommand command;
+	command.id = Command::TargetGrid;
+	command.parameter = attackingPlayerID;
+	command.socketID = -2; //Exclusive broadcast code
+	command.data.push_back(attackedPlayerID);
+	command.data.push_back(attackedNodeIndex);
+
+	//warn the others
+	std::cout << "Warning others about " << attackingPlayerID << " attacking " << attackedPlayerID << " at " << attackedNodeIndex  << endl;
+	networkManager->sendCommandToEveryoneExcept(attackingPlayerID, command);
+}
+
+void GameManager::managePlayerFire(int attackingPlayerID, std::vector<int> targetPairs)
+{
+	int attackingPlayerIndex = getBoardIndexOfPlayer(attackingPlayerID);
+
+	if (playerBoards.at(attackingPlayerIndex).playerReady)
+	{
+		return;
+	}
+
+	IntArrayCommand command;
+	command.id = Command::FireReady;
+	command.parameter = attackingPlayerID;
+	command.socketID = -2;
+
+	bool playerReady = targetPairs.at(0) != 0;
+
+	if (playerReady)
+	{
+		playerBoards.at(attackingPlayerIndex).targetPairs = std::vector<int>(targetPairs);
+	}
+
+	playerBoards.at(attackingPlayerIndex).playerReady = playerReady;
+	command.data.push_back(playerReady);
+
+	//warn the others
+	std::cout << "Warning others that Player" << attackingPlayerID << " is " << (playerReady ? "" : "not ") << "ready" << endl;
+	networkManager->sendCommandToEveryoneExcept(attackingPlayerID, command);
+
+	bool allReady = playerReady;
+	for (size_t i = 0; i < playerBoards.size() && allReady; i++)
+	{
+		allReady = allReady && playerBoards.at(i).playerReady;
+	}
+
+	if (allReady)
+	{
+		//Compute damage and send results
+	}
+}
+
 int GameManager::getBoardIndexOfPlayer(int playerID)
 {
 	for (size_t i = 0; i < boardIndexToPlayerID.size(); i++)

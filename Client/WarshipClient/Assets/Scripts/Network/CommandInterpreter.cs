@@ -42,12 +42,16 @@ public class CommandInterpreter
                     Debug.LogWarning(c.id + " Not Yet Implemented");
                     break;
 
+                case CommandManager.CommandID.FireReady:
+                    Debug.LogWarning(c.id + " Not Yet Implemented");
+                    break;
+
                 case CommandManager.CommandID.FireResult:
                     Debug.LogWarning(c.id + " Not Yet Implemented");
                     break;
 
                 case CommandManager.CommandID.TargetGrid:
-                    Debug.LogWarning(c.id + " Not Yet Implemented");
+                    GameManager.instance.registerOpponentTargeting(c.param, command.data[0], command.data[1]);
                     break;
 
                 case CommandManager.CommandID.ShipSunk:
