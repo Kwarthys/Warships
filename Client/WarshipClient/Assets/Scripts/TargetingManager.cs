@@ -66,6 +66,11 @@ public class TargetingManager : MonoBehaviour
             flareUseOrder[i] = 0;
             flareToTarget[i] = -1;
         }
+
+        for (int i = 0; i < flares.Length; i++)
+        {
+            flares[i].stop();
+        }
     }
 
     public void target(Vector3 worldPos, int gridIndex, int nodeIndex)

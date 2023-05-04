@@ -33,6 +33,14 @@ public class ScoreDisplayManager : MonoBehaviour
         setPlayerReadyImage(playerIndexToID.Count - 1, false);
     }
 
+    public void setAllPlayersReady(bool readyState = true)
+    {
+        for (int i = 0; i < displayTexts.Count; i++)
+        {
+            setPlayerReadyImage(i, readyState);
+        }
+    }
+
     public void setPlayerReady(int playerID, bool readyState)
     {
         setPlayerReadyImage(getPlayerIndexFromID(playerID), readyState);

@@ -2140,8 +2140,7 @@ MonoBehaviour:
   sunkFXPrefab: {fileID: 8651125189419254805, guid: d05f335403c2f7a4997a464a7ba8bfae,
     type: 3}
   eventSystem: {fileID: 1693324727}
-  fireButton: {fileID: 0}
-  readyButton: {fileID: 1608526848}
+  readyButton: {fileID: 1608526850}
   playerNameInputFieldHolder: {fileID: 1302148612}
   playerNameInputField: {fileID: 309835343}
   playerPlacements:

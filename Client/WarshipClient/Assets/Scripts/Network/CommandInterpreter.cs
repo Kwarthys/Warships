@@ -39,15 +39,15 @@ public class CommandInterpreter
                     break;
 
                 case CommandManager.CommandID.FireGrid:
-                    Debug.LogWarning(c.id + " Not Yet Implemented");
+                    GameManager.instance.ownFireResults(c.param, command.data);
                     break;
 
                 case CommandManager.CommandID.FireReady:
-                    Debug.LogWarning(c.id + " Not Yet Implemented");
+                    GameManager.instance.fireReady(c.param, command.data[0] == 1);
                     break;
 
                 case CommandManager.CommandID.FireResult:
-                    Debug.LogWarning(c.id + " Not Yet Implemented");
+                    GameManager.instance.manageFireResults(c.param, command.data);
                     break;
 
                 case CommandManager.CommandID.TargetGrid:
@@ -55,7 +55,7 @@ public class CommandInterpreter
                     break;
 
                 case CommandManager.CommandID.ShipSunk:
-                    Debug.LogWarning(c.id + " Not Yet Implemented");
+                    GameManager.instance.newShipScore(c.param, command.data);
                     break;
             }
         }

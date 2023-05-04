@@ -14,7 +14,7 @@ void ClientConnexion::manageClientCommunication(ClientConnexion& clientConnexion
         if (rcvLen > 0)
         {
             std::unique_ptr<Command> command = CommandManager::deserialize(recvBuf, rcvLen);
-            command->socketID = clientConnexion.clientSocket;
+            command->socketID = clientConnexion.clientSocket%255;
             std::cout << "Placing command in buffer. Command:";
             CommandManager::displayCommand(command.get());
             clientConnexion.inwardCommandBuffer->waitToAdd(std::move(command));

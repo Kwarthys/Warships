@@ -107,8 +107,8 @@ void NetworkManager::welcomeClients(NetworkManager* networkManager, SOCKET serve
 
         if (clientSocket != INVALID_SOCKET)
         {
-            networkManager->connexions.emplace_back(clientSocket, &(networkManager->inwardComs));//TODO Debug "abort() has been called" on second connexion
-            networkManager->indeciesToSockets.push_back(clientSocket);
+            networkManager->connexions.emplace_back(clientSocket, &(networkManager->inwardComs));//client connexions cannont be moved, so sized connexions to avoid any need for a move
+            networkManager->indeciesToSockets.push_back(clientSocket%255);//can only send 8bit, so cuting what's above
 
             std::cout << "added connexion to "  << clientSocket << endl;
 

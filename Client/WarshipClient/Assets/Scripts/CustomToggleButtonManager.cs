@@ -57,6 +57,12 @@ public class CustomToggleButtonManager : Selectable, IPointerClickHandler, ISubm
 
     }
 
+    public void changeStateWithoutTrigger(bool state)
+    {
+        isOn = state;
+        updateSprites();
+    }
+
     private void updateSprites()
     {
         if(isOn)

@@ -33,6 +33,10 @@ class GameManager
 	private:
 		int getBoardIndexOfPlayer(int playerID);
 
+		void computeTargetingDamage();
+		void sendDamageResults();
+		void clearTargetingResultHelpers();
+
 		CommandInterpreter commandInterpreter;
 
 		std::vector<int> boardIndexToPlayerID;

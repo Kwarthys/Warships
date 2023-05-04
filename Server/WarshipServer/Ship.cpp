@@ -7,6 +7,8 @@ Ship::Ship(Vector2 pos, int length, Orientation orientation) : pos(pos), length(
 		hitPoints.push_back(false);
 	}
 
+	std::cout << "Placing ship at " << pos.x << "," << pos.y << std::endl;
+
 	/*** Compute Footprint ***/
 	int w = 1;
 	int h = 1;
@@ -33,12 +35,16 @@ Ship::Ship(Vector2 pos, int length, Orientation orientation) : pos(pos), length(
 		break;
 	}
 
-	footprint = Footprint(x, y, w, h); //pos still 0,0 for now but will be moved elsewhere
+	footprint = Footprint(x, y, w, h);
 }
 
 bool Ship::takeHit(Vector2 hit)
 {
+	std::cout << "hit at " << hit.x << "," << hit.y << std::endl;
+
 	int hitPlace = fromPointToLength(hit);
+
+	std::cout << "place is " << hitPlace << std::endl;
 
 	if (hitPlace == -1)
 	{
@@ -53,6 +59,13 @@ bool Ship::takeHit(Vector2 hit)
 	}
 
 	hitPoints.at(hitPlace) = true;
+
+	for (size_t i = 0; i < hitPoints.size(); i++)
+	{
+		std::cout << hitPoints.at(i) << " ";
+	}
+
+	std::cout << std::endl;
 
 	if (isSunk())
 	{
@@ -87,6 +100,8 @@ int Ship::fromPointToLength(Vector2 hit)
 			}
 		}
 	}
+
+	std::cout << "ShipIndex:" << index << " posx:" << pos.x << " posy:" << pos.y << "dx:" << dx << " dy:" << dy << "f:" << facing << " v:" << value << std::endl;
 
 	return value;
 }

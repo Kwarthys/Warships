@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.EventSystems;
+using System.Text;
 
 public class GameManager : MonoBehaviour
 {
@@ -73,6 +74,8 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private GameObject cameraHolder;
 
+    private StringBuilder stringBuilder = new StringBuilder();
+
     public string localPlayerName = "Player";
 
     public Player registerPlayer(int index, int playerPlacement, bool isLocal = false)
@@ -120,13 +123,86 @@ public class GameManager : MonoBehaviour
         readyButton.gameObject.SetActive(false);
     }
 
+    public void newShipScore(int playerID, int[] data)
+    {
+        int shipsLeft = data[0];
+        ScoreDisplayManager.instance.updatePlayerScore(playerID, shipsLeft);
+        getPlayerByID(playerID).targetingManager.resetStates(shipsLeft);
+
+        if(data.Length > 1)
+        {
+            for (int i = 1; i < data.Length; i++)
+            {
+                //data[i] is sunk ship ID
+                getPlayerByID(playerID).gridManager.notifyShipSunk(data[i]);
+            }
+        }
+    }
+
+    public void ownFireResults(int ownShipLeft, int[] results)
+    {
+        ScoreDisplayManager.instance.setAllPlayersReady(false);
+        readyButton.changeStateWithoutTrigger(false);
+
+        int hit = 0;
+        int miss = 0;
+
+        for (int i = 0; i < results.Length; i++)
+        {
+            if(results[i] == 1)
+            {
+                hit++;
+            }
+            else
+            {
+                miss++;
+            }
+        }
+
+        if(hit != 0)
+        {
+            stringBuilder.Append(hit);
+            stringBuilder.Append(" Hit(s). ");
+        }
+
+        if(miss != 0)
+        {
+            stringBuilder.Append(miss);
+            stringBuilder.Append(" Miss.");
+        }
+
+        DebugTextManager.instance.sendTextToDebug(stringBuilder.ToString());
+        stringBuilder.Clear();
+    }
+
+    public void manageFireResults(int playerID, int[] dataPairs)
+    {
+        int[] nodeIndecies = new int[dataPairs.Length / 2];
+        int[] shipIndecies = new int[dataPairs.Length / 2];
+
+        for (int i = 0; i < nodeIndecies.Length; i++)
+        {
+            nodeIndecies[i] = dataPairs[2 * i];
+            shipIndecies[i] = dataPairs[2 * i + 1];
+        }
+
+        getPlayerByID(playerID).gridManager.receiveHits(nodeIndecies, shipIndecies);
+    }
+
+    public void fireReady(int playerID, bool readyStatus)
+    {
+        ScoreDisplayManager.instance.setPlayerReady(playerID, readyStatus);
+    }
+
     public void gameStarts(int playerID, bool readyStatus)
     {
         if(playerID == 0)
         {
             //Everyone is ready, game starts
             otherDonePlacing = true;
-            
+
+            ScoreDisplayManager.instance.setAllPlayersReady(false);
+            readyButton.changeStateWithoutTrigger(false);
         }
         else
         {
@@ -314,9 +390,14 @@ public class GameManager : MonoBehaviour
             {
                 //Ready to fire
                 Vector2Int[] targetPairs = localPlayer.targetingManager.getTargetedNodeIds();
-
+                commandSender.sendFireCommand(targetPairs);
             }
-            
+            else
+            {
+                commandSender.sendNoLongerFireReady();
+            }
+
+            ScoreDisplayManager.instance.setPlayerReady(localPlayer.playerID, status);
         }
     }
 }

@@ -68,7 +68,6 @@ bool GameManager::placePlayerShip(const int playerID, const Ship::ShipType shipT
 
 void GameManager::managePlayersReady(int playerID, bool readyStatus)
 {
-
 	int index = getBoardIndexOfPlayer(playerID);
 	playerBoards.at(index).playerReady = readyStatus;
 
@@ -90,6 +89,11 @@ void GameManager::managePlayersReady(int playerID, bool readyStatus)
 		command.socketID = -3;//won't be sent, just for monitoring
 
 		networkManager->sendCommandToEveryone(command);
+
+		for (size_t i = 0; i < playerBoards.size(); i++)
+		{
+			playerBoards.at(i).playerReady = false;
+		}
 	}
 	else
 	{
@@ -102,8 +106,6 @@ void GameManager::managePlayersReady(int playerID, bool readyStatus)
 		command.data.push_back(readyStatus ? 1 : 0);
 		networkManager->sendCommandToEveryoneExcept(playerID, command);
 	}
-
-	
 }
 
 void GameManager::managePlayerTargeting(int attackingPlayerID, int attackedPlayerID, int attackedNodeIndex)
@@ -123,11 +125,6 @@ void GameManager::managePlayerTargeting(int attackingPlayerID, int attackedPlaye
 void GameManager::managePlayerFire(int attackingPlayerID, std::vector<int> targetPairs)
 {
 	int attackingPlayerIndex = getBoardIndexOfPlayer(attackingPlayerID);
-
-	if (playerBoards.at(attackingPlayerIndex).playerReady)
-	{
-		return;
-	}
 
 	IntArrayCommand command;
 	command.id = Command::FireReady;
@@ -157,6 +154,9 @@ void GameManager::managePlayerFire(int attackingPlayerID, std::vector<int> targe
 	if (allReady)
 	{
 		//Compute damage and send results
+		computeTargetingDamage();
+		sendDamageResults();
+		clearTargetingResultHelpers();
 	}
 }
 
@@ -172,4 +172,88 @@ int GameManager::getBoardIndexOfPlayer(int playerID)
 
 	std::cout << "Couldn't find board of Player" << playerID << std::endl;
 	return -1;
+}
+
+void GameManager::computeTargetingDamage()
+{
+	for (size_t i = 0; i < playerBoards.size(); i++)
+	{
+		for (size_t ti = 0; ti < playerBoards.at(i).targetPairs.size(); ti += 2)
+		{
+			int attackedPlayerID = playerBoards.at(i).targetPairs.at(ti);
+			int attackedNodeIndex = playerBoards.at(i).targetPairs.at(ti + 1);
+
+			int attackedPlayerBoardIndex = getBoardIndexOfPlayer(attackedPlayerID);
+
+			int shipHit = playerBoards.at(attackedPlayerBoardIndex).shoot(attackedNodeIndex);
+
+			playerBoards.at(attackedPlayerBoardIndex).targetedResultPairs.push_back(attackedNodeIndex);
+			playerBoards.at(attackedPlayerBoardIndex).targetedResultPairs.push_back(shipHit);
+
+			playerBoards.at(i).targetResults.push_back(shipHit != 0);
+		}
+	}
+}
+
+void GameManager::sendDamageResults()
+{
+	for (size_t i = 0; i < playerBoards.size(); i++)
+	{
+		int playerID = playerBoards.at(i).getPlayerID();
+
+		//tell player about his own hits or misses
+		IntArrayCommand ownResultsCommand;
+		ownResultsCommand.id = Command::FireGrid;
+		ownResultsCommand.socketID = playerID;
+		ownResultsCommand.parameter = 0;
+
+		for (size_t ti = 0; ti < playerBoards.at(i).targetResults.size(); ti ++)
+		{
+			ownResultsCommand.data.push_back(playerBoards.at(i).targetResults.at(ti));
+		}
+
+		std::cout << "Telling Player" << playerID << " his fire results" << endl;
+		networkManager->sendCommandToPlayerID(playerID, ownResultsCommand);
+
+		//tell everyone about changes on this player's grid
+		IntArrayCommand fireResultCommand;
+		fireResultCommand.id = Command::FireResult;
+		fireResultCommand.socketID = -3;
+		fireResultCommand.parameter = playerID;
+
+		for (size_t ti = 0; ti < playerBoards.at(i).targetedResultPairs.size(); ti++)
+		{
+			fireResultCommand.data.push_back(playerBoards.at(i).targetedResultPairs.at(ti));
+		}
+
+		std::cout << "Telling everyone about Player" << playerID << "'s incoming damage" << endl;
+		networkManager->sendCommandToEveryone(fireResultCommand);
+
+		//tell everyone about this player's avaialble shots
+		IntArrayCommand shipsLeftCommand;
+		shipsLeftCommand.id = Command::ShipSunk;
+		shipsLeftCommand.socketID = -3;
+		shipsLeftCommand.parameter = playerID;
+		shipsLeftCommand.data.push_back(playerBoards.at(i).getNumberOfShipsAfloat());
+
+		for (size_t si = 0; si < playerBoards.at(i).newlySunkedShip.size(); si++)
+		{
+			shipsLeftCommand.data.push_back(playerBoards.at(i).newlySunkedShip.at(si));
+		}
+
+		std::cout << "Telling everyone about Player" << playerID << "'s ships left" << endl;
+		networkManager->sendCommandToEveryone(shipsLeftCommand);
+	}
+}
+
+void GameManager::clearTargetingResultHelpers()
+{
+	for (size_t i = 0; i < playerBoards.size(); i++)
+	{
+		playerBoards.at(i).targetPairs.clear();
+		playerBoards.at(i).targetResults.clear();
+		playerBoards.at(i).targetedResultPairs.clear();
+		playerBoards.at(i).newlySunkedShip.clear();
+		playerBoards.at(i).playerReady = false;
+	}
 }

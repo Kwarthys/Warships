@@ -33,6 +33,7 @@ void CommandInterpreter::treatCommand(const Command* command)
 				break;
 
 			case Command::FireGrid:
+				gameManager->managePlayerFire(c->socketID, c->data);
 				break;
 
 		}

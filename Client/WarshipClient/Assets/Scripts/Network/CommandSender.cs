@@ -32,6 +32,15 @@ public class CommandSender
         sendCommand(command);
     }
 
+    public void sendNoLongerFireReady()
+    {
+        IntArrayCommand command = new IntArrayCommand();
+        command.id = CommandManager.CommandID.FireGrid;
+        command.param = 0;
+        command.data = new int[1]{0};
+        sendCommand(command);
+    }
+
     public void sendFireCommand(Vector2Int[] targetedPairs)
     {
         IntArrayCommand command = new IntArrayCommand();

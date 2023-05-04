@@ -15,21 +15,39 @@ Board::Board(int sizeX, int sizeY, int playerID)
 	}
 }
 
-bool Board::shoot(Vector2 target)
+int Board::shoot(int nodeIndex)
 {
-	int nodeIndex = fromCoordToIndex(target);
+	Vector2 target = fromIndexToCoord(nodeIndex);
 
 	bool shipHit = map.at(nodeIndex).taken && !map.at(nodeIndex).hit;
 
 	map.at(nodeIndex).hit = true;
 
+	int shipIndex = 0;
+
 	if (shipHit)
 	{
-		int shipIndex = map.at(nodeIndex).shipID;
-		ships.at(shipIndex).takeHit(target);
+		shipIndex = map.at(nodeIndex).shipID;
+
+		debugDisplayMap();
+		std::cout << "hit shipIndex:" << shipIndex << std::endl;
+
+		ships.at(shipIndex-1).takeHit(target);//shipIndex 0 does not exist
+
+		if (ships.at(shipIndex - 1).isSunk())
+		{
+			newlySunkedShip.push_back(shipIndex);
+		}
 	}
 
-	return shipHit;
+	return shipIndex;
+}
+
+int Board::shoot(Vector2 target)
+{
+	int nodeIndex = fromCoordToIndex(target);
+
+	return shoot(nodeIndex);
 }
 
 bool Board::placeNewShip(Ship::ShipType shipType, Ship::Orientation facing, int rootNode)
@@ -44,7 +62,7 @@ bool Board::placeShip(Ship ship)
 
 	if (isSpotFree(ship.footprint))
 	{
-		ship.index = ships.size();
+		ship.index = ships.size()+1;//avoid index 0
 		ships.emplace_back(ship);
 		assignShipToMap(ship);
 
@@ -110,6 +128,25 @@ Vector2 Board::fromIndexToCoord(int index)
 	coords.y = index / sizeX;
 
 	return coords;
+}
+
+int Board::getNumberOfShipsAfloat()
+{
+	int afloat = 0;
+	for (size_t i = 0; i < ships.size(); i++)
+	{
+		if (!ships.at(i).isSunk())
+		{
+			afloat++;
+		}
+	}
+
+	return afloat;
+}
+
+bool Board::isShipSunk(int shipIndex)
+{
+	return ships.at(shipIndex - 1).isSunk();
 }
 
 void Board::debugDisplayMap()
